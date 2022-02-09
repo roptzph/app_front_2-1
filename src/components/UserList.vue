@@ -27,7 +27,7 @@ export default {
   methods: {
     getUserList() {  
       //因为不是在此页引入axios,所以要加this.axios  
-      this.axios.get("/getstaff")
+      this.axios.get("/v1/getstaff")
         .then(res => {
            this.userList = res.data
         })

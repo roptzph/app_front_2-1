@@ -14,7 +14,7 @@ Vue.config.productionTip = false
 
 Vue.use(EIementUI)
 //基地址设置为本地+端口，proxy处设为服务器地址
-axios.defaults.baseURL = 'http://localhost:4000'
+//axios.defaults.baseURL = 'http://localhost:4000'
 //Vue.prototype.$axios = axios
 //Vue.prototype.$http = axios
 

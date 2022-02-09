@@ -3,13 +3,8 @@ module.exports = {
         port: 4000, //本地端口
         open: true,
         proxy: 'http://localhost:5000' //服务器+端口
-
- 
-          
-            
-     
-
-}}
+    }
+}
 
         //跨域指向服务器，前后端一定会涉及跨域问题
         //main.js中基地址baseURL可以不写
