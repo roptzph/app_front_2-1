@@ -25,10 +25,5 @@ npm install  -g
 }
 ```
 
-1.**ghkkd**  
-2.kkdkkdk  
-3.kkieiiei  
-![aa](./dist/favicon.ico)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
