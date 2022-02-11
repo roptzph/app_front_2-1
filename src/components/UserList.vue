@@ -8,10 +8,10 @@
       <el-table-column prop="birthday"  label="生日"  width="250"></el-table-column>
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
       <el-table-column prop="work"    filter-multiple label="操作"> 
-        <template v-slot="scope">
+        <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
           <div>
-            <a href="#">详情</a>  &nbsp
-            <a href="#" @click="delUser(scope.row.id)">删除</a>
+            <router-link :to="'/users/' + scope.row.id">详情</router-link>  &nbsp
+            <a href="#" @click.prevent="delUser(scope.row.id)">删除</a>  <!--prevent事件修饰符防跳转-->
           </div>
         </template>
       </el-table-column>
@@ -87,9 +87,7 @@ export default {
         poid:''
 
       },
-      table:{
-        id: ''
-      },
+    
       rules: {
           name: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -138,14 +136,15 @@ export default {
       let age = this.form.age
       let poid = this.form.poid
       this.axios.post("/v1/poststaff",{
-        id: id,
-        name: name,
-        sex: sex,
-        birthday: birthday,
-        other: other,
-        age: age,
-        poid: poid
-
+            
+            id: id,
+            name: name,
+            sex: sex,
+            birthday: birthday,
+            other: other,
+            age: age,
+            poid: poid
+           
       },{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
@@ -157,14 +156,24 @@ export default {
         })
     },
     //删除用户  
-    delUser(id) {  
+ 
       //因为不是在此页引入axios,所以要加this.axios  
       //id, name, sex, birthday, other, age, poid
       //如何获取到删除记录的ID?要用插槽 v-slot="scope"  scope.row.id
       //后边怎么接收？三种方法都不行
+    async delUser(id) { 
+      const confirmResult = await this.$confirm(`此操作将永久删除编号："${id}"  用户的记录，是否继续？`,'提示',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      }).catch(err => err)
+      if(confirmResult !== 'confirm') return this.$message.info('取消了删除！')
+      this.$message.success('删除成功！')
+    
+      
+      
 
-      //let id = id
-      //console.log(id)
+
       this.axios.delete("/v1/delstaff",{
         params:{
           id: id
@@ -172,9 +181,7 @@ export default {
       },{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
-          // this.isAddUser()
            this.getUserList()
-           this.$message.success('删除记录成功！')
         })
         .catch(err => {
           console.log(err)
