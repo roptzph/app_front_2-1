@@ -165,13 +165,16 @@ export default {
 
       //let id = id
       //console.log(id)
-      this.axios.post("/v1/delstaff",{
-        id: id
+      this.axios.delete("/v1/delstaff",{
+        params:{
+          id: id
+        }
       },{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
-           this.isAddUser()
+          // this.isAddUser()
            this.getUserList()
+           this.$message.success('删除记录成功！')
         })
         .catch(err => {
           console.log(err)
