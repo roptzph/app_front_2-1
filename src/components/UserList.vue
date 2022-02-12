@@ -5,12 +5,15 @@
       <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
       <el-table-column prop="name"      label="姓名"  width="140"></el-table-column>
       <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
+      <el-table-column prop="age"       label="年龄"  width="50"></el-table-column>
       <el-table-column prop="birthday"  label="生日"  width="250"></el-table-column>
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
       <el-table-column prop="work"    filter-multiple label="操作"> 
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
           <div>
             <router-link :to="'/users/' + scope.row.id">详情</router-link>  &nbsp
+            <a href="#"  @click="putShow(scope.row.id)">修改</a> &nbsp <!--prevent事件修饰符防跳转-->
+            <!--<a href="#" @click.prevent="putUser(scope.row.id)">修改</a> &nbsp --> <!--prevent事件修饰符防跳转-->
             <a href="#" @click.prevent="delUser(scope.row.id)">删除</a>  <!--prevent事件修饰符防跳转-->
           </div>
         </template>
@@ -18,7 +21,7 @@
 
   </el-table>
 
-  <!--增加对话框-->
+  <!--增加添加用户的对话框-->
 
   <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="30%" @close="onDialogClose" >
   
@@ -54,6 +57,46 @@
   </span>
 </el-dialog>
  
+  <!--增加修改用户的对话框-->
+
+  <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="30%" @close="onDialogClose" >
+  
+  <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
+  <el-form 
+      ref="putFormref" 
+      :model="putForm" 
+      :rules="putRules" 
+      label-width="80px" >
+  <el-form-item label="代号"  prop="id">
+    <el-input v-model="putForm.id"></el-input>
+  </el-form-item>
+  <el-form-item label="用户名"  prop="name">
+    <el-input v-model="putForm.name"></el-input>
+  </el-form-item>
+  <el-form-item label="生日" prop="birthday">
+    <el-input v-model="putForm.birthday"></el-input>
+  </el-form-item>
+  <el-form-item label="年龄" prop="age">
+    <el-input v-model.number="putForm.age"></el-input>
+  </el-form-item>
+   <el-form-item label="性别"  prop="sex">
+    <el-input v-model="putForm.sex"></el-input>
+  </el-form-item>
+   <el-form-item label="其他"  prop="other">
+    <el-input v-model="putForm.other"></el-input>
+  </el-form-item>
+   <el-form-item label="部门号"  prop="poid">
+    <el-input v-model="putForm.poid"></el-input>
+  </el-form-item>
+
+  </el-form>
+
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="putDialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="putUser">确 定</el-button>
+  </span>
+</el-dialog>
+ 
   </div>
 </template> 
 
@@ -77,6 +120,7 @@ export default {
     return{
       userList: [],
       dialogVisible:false,
+      putDialogVisible:false,
       form : {
         id: '',
         name: '',
@@ -87,8 +131,30 @@ export default {
         poid:''
 
       },
+      putForm : {
+        id: '',
+        name: '',
+        sex:'',
+        birthday:'',
+        age:'',
+        other:'',
+        poid:''
+      },
     
       rules: {
+          name: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 3, max:15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+          ],
+          birthday: [
+            { type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
+          ],
+          age: [
+            { type: 'number', required: true, message: '请输入年龄', trigger: 'blur' },
+            { validator: checkAge, trigger: 'blur'}
+          ]
+      },
+      putRules: {
           name: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
             { min: 3, max:15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
@@ -128,24 +194,26 @@ export default {
     NewAddUser() {  
       //因为不是在此页引入axios,所以要加this.axios  
       //id, name, sex, birthday, other, age, poid
-      let id = this.form.id
-      let name = this.form.name
-      let sex = this.form.sex
-      let birthday = this.form.birthday
-      let other = this.form.other
-      let age = this.form.age
-      let poid = this.form.poid
-      this.axios.post("/v1/poststaff",{
+      // let id = this.form.id
+      // let name = this.form.name
+      // let sex = this.form.sex
+      // let birthday = this.form.birthday
+      // let other = this.form.other
+      // let age = this.form.age
+      // let poid = this.form.poid
+      this.axios.post("/v1/poststaff",this.form   //全部就方便，用数组对象就行
+      // {
             
-            id: id,
-            name: name,
-            sex: sex,
-            birthday: birthday,
-            other: other,
-            age: age,
-            poid: poid
+      //       id: id,
+      //       name: name,
+      //       sex: sex,
+      //       birthday: birthday,
+      //       other: other,
+      //       age: age,
+      //       poid: poid
            
-      },{})   //注意v1与后端app.use('/v1',router) 对应
+      // }
+      ,{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
            this.isAddUser()
@@ -162,16 +230,13 @@ export default {
       //如何获取到删除记录的ID?要用插槽 v-slot="scope"  scope.row.id
       //后边怎么接收？三种方法都不行
     async delUser(id) { 
-      const confirmResult = await this.$confirm(`此操作将永久删除编号："${id}"  用户的记录，是否继续？`,'提示',{
+      const confirmResult = await this.$confirm(`此操作将永久删除编号为 "${id}" 用户的记录，是否继续？`,'提示',{
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',
       }).catch(err => err)
       if(confirmResult !== 'confirm') return this.$message.info('取消了删除！')
       this.$message.success('删除成功！')
-    
-      
-      
 
 
       this.axios.delete("/v1/delstaff",{
@@ -186,13 +251,101 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    }
-    //修改用户
+    },
+    // 展示编辑员工对话框
+    putShow(id) {
+      // 请求该员工的数据
+      console.log("请求该员工的数据" + id);
+      this.axios
+        .get("/v1/getstaff_id", {
+          params: {
+            id: id
+          }
+        })
+        .then(res => {
+          this.putForm = res.data[0]   //Invalid prop: type check failed for prop "model". Expected Object, got Array
+        })
+        .catch(error => {
+          console.log(error)
+        });
+      // 展示编辑对话框
+      this.putDialogVisible = true
+    },
 
+    //提交修改用户
+     putUser() { 
+      //console.log(this.userForm.id)
+      //putDialogVisible = true
+      this.$refs.putFormref.validate(valid => {
+        if (!valid) return;
+    console.log(this.formateDate(this.putFrom.birthday))
+
+      let id = this.putForm.id
+      let name = this.putForm.name
+      let sex = this.putForm.sex
+      let birthday = this.formateDate(this.putFrom.birthday)
+      let other = this.putForm.other
+      let age = this.putForm.age
+      let poid = this.putForm.poid
+      this.axios.get("/v1/putstaff",{
+        params:{    
+            id: id,
+            name: name,
+            sex: sex,
+            birthday: birthday,
+            other: other,
+            age: age,
+            poid: poid
+        }   
+      },{})   //注意v1与后端app.use('/v1',router) 对应
+        .then(res => {
+           this.userList = res.data
+           this.getUserList()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    //修改用户
+     
     //多条件查询 
-  } 
-  
+    // 格式化事件
+    formateDate(datetime) {
+      // let  = "2019-11-06T16:00:00.000Z"
+      function addDateZero(num) {
+        return num < 10 ? "0" + num : num
+      }
+      let dd = new Date(datetime)
+      let formatdatetime1 = dd.getFullYear() + "-" +  addDateZero(d.getMonth() + 1) +  "-" +  addDateZero(d.getDate())
+      return formatdatetime1
+    },
+     
+  watch: {
+    // 如果路由有变化，会再次执行该方法
+    $route: "getstaff"
+  },
+  filters: {
+    // 过滤生日
+    toage: function(value) {
+      let birthday = new Date(value);
+      let d = new Date();
+      // 当前年份 - 出生年份  当前月份 < 出生月份 则 直接减 1岁  当前月份 = 出生月份 且 当前日期 < 出生日期 也减 1岁
+      let age =
+        d.getFullYear() -
+        birthday.getFullYear() -
+        (d.getMonth() < birthday.getMonth() ||
+        (d.getMonth() === birthday.getMonth() &&
+          d.getDate() < birthday.getDate())
+          ? 1
+          : 0);
+      return age;
+    }
+  }
 }
+
+
+
+
  </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">

@@ -4,10 +4,12 @@
     <span>用户详情</span>
     <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">返回</el-button>
   </div>
-  <div class="text item">
-    <p>姓名: {{ x.name }} </p>
-    <p>年龄: {{  }} </p>
-    <p>生日: {{ }} </p>
+  <div  class="text item">
+  <!--<div v-for="(item,id) in userInfo" :key="id" class="text item">  -->
+    <p>姓名: {{ userInfo.name }} </p>
+    <p>性别: {{ userInfo.sex }} </p>
+    <p>年龄: {{ userInfo.age }} </p>
+    <p>生日: {{ userInfo.birthday }} </p>
   </div>
 </el-card>
 </template>
@@ -17,9 +19,9 @@
       name: 'UserDetail',
       props: ['id'],
       data(){
-          return {
-              x: []
-          }
+          return{ 
+              userInfo: []
+          } 
       },
       created(){
           this.getUserInfo()
@@ -30,10 +32,8 @@
             params:{id: this.id}
          },{})   //注意v1与后端app.use('/v1',router) 对应
            .then(res => {
-                let y =res.data
-                this.x = y
-
-            })
+                this.userInfo =res.data[0]
+             })
             .catch(err => {
                 console.log(err)
             })
