@@ -273,17 +273,11 @@ export default {
     },
 
     //提交修改用户
-     putUser() { 
-      //console.log(this.userForm.id)
-      //putDialogVisible = true
-      this.$refs.putFormref.validate(valid => {
-        if (!valid) return;
-    console.log(this.formateDate(this.putFrom.birthday))
-
+    putUser() { 
       let id = this.putForm.id
       let name = this.putForm.name
       let sex = this.putForm.sex
-      let birthday = this.formateDate(this.putFrom.birthday)
+      //let birthday = this.formateDate(this.putFrom.birthday)
       let other = this.putForm.other
       let age = this.putForm.age
       let poid = this.putForm.poid
@@ -292,7 +286,7 @@ export default {
             id: id,
             name: name,
             sex: sex,
-            birthday: birthday,
+            //birthday: birthday,
             other: other,
             age: age,
             poid: poid
@@ -305,45 +299,13 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    },
+      }
     //修改用户
      
     //多条件查询 
-    // 格式化事件
-    formateDate(datetime) {
-      // let  = "2019-11-06T16:00:00.000Z"
-      function addDateZero(num) {
-        return num < 10 ? "0" + num : num
-      }
-      let dd = new Date(datetime)
-      let formatdatetime1 = dd.getFullYear() + "-" +  addDateZero(d.getMonth() + 1) +  "-" +  addDateZero(d.getDate())
-      return formatdatetime1
-    },
-     
-  watch: {
-    // 如果路由有变化，会再次执行该方法
-    $route: "getstaff"
-  },
-  filters: {
-    // 过滤生日
-    toage: function(value) {
-      let birthday = new Date(value);
-      let d = new Date();
-      // 当前年份 - 出生年份  当前月份 < 出生月份 则 直接减 1岁  当前月份 = 出生月份 且 当前日期 < 出生日期 也减 1岁
-      let age =
-        d.getFullYear() -
-        birthday.getFullYear() -
-        (d.getMonth() < birthday.getMonth() ||
-        (d.getMonth() === birthday.getMonth() &&
-          d.getDate() < birthday.getDate())
-          ? 1
-          : 0);
-      return age;
-    }
+    
+    }    
   }
-}
-
-
 
 
  </script>
