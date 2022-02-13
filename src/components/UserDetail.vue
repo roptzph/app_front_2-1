@@ -1,7 +1,7 @@
 <template>
    <el-card class="box-card" width="30%">
   <div slot="header" class="clearfix">
-    <span>用户详情</span>
+    <span><h3>用户详情</h3></span>
     <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">返回</el-button>
   </div>
   <div  class="text item">

@@ -1,14 +1,16 @@
 <template>
+  
   <div>
+    <h1 >用户列表资料</h1>
     <el-button type="primary" @click="dialogVisible = true">添加用户</el-button>
   <el-table :data="userList"    stripe  border  style="width: 50%" >
       <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
-      <el-table-column prop="name"      label="姓名"  width="140"></el-table-column>
+      <el-table-column prop="name"      label="姓名"  width="110"></el-table-column>
       <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
       <el-table-column prop="age"       label="年龄"  width="50"></el-table-column>
-      <el-table-column prop="birthday"  label="生日"  width="250"></el-table-column>
+      <el-table-column prop="birthday"  label="生日"  width="200"></el-table-column>
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
-      <el-table-column prop="work"    filter-multiple label="操作"> 
+      <el-table-column prop="work"    filter-multiple label="操作" width="200" >
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
           <div>
             <router-link :to="'/users/' + scope.row.id">详情</router-link>  &nbsp
@@ -185,6 +187,7 @@ export default {
     },
     onDialogClose(){
       this.$refs.form.resetFields()
+      this.$refs.putFormref.resetFields()
     },
     isAddUser(){
       this.dialogVisible = false
@@ -224,7 +227,6 @@ export default {
         })
     },
     //删除用户  
- 
       //因为不是在此页引入axios,所以要加this.axios  
       //id, name, sex, birthday, other, age, poid
       //如何获取到删除记录的ID?要用插槽 v-slot="scope"  scope.row.id
@@ -264,6 +266,7 @@ export default {
         })
         .then(res => {
           this.putForm = res.data[0]   //Invalid prop: type check failed for prop "model". Expected Object, got Array
+          
         })
         .catch(error => {
           console.log(error)
@@ -295,6 +298,7 @@ export default {
         .then(res => {
            this.userList = res.data
            this.getUserList()
+           this.putDialogVisible = false
         })
         .catch(err => {
           console.log(err)
