@@ -7,8 +7,15 @@
       <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
       <el-table-column prop="name"      label="姓名"  width="110"></el-table-column>
       <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
-      <el-table-column prop="age"       label="年龄"  width="50"></el-table-column>
-      <el-table-column prop="birthday"  label="生日"  width="200"></el-table-column>
+
+      <el-table-column prop="birthday"       label="年龄"  width="50">
+        <template v-slot="scope">{{ scope.row.birthday | dateToAge }} </template>
+      </el-table-column>
+
+      <el-table-column prop='birthday'      label="出生日期"  width="240" >
+
+      </el-table-column>
+
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
       <el-table-column prop="work"    filter-multiple label="操作" width="200" >
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
@@ -35,15 +42,31 @@
   <el-form-item label="用户名"  prop="name">
     <el-input v-model="form.name"></el-input>
   </el-form-item>
-  <el-form-item label="生日" prop="birthday">
-    <el-input v-model="form.birthday"></el-input>
+
+  <el-form-item label="出生日期"  prop="birthday" required >
+   <div class="block">
+    <el-date-picker
+      v-model="form.birthday"
+      type="date"
+      placeholder="选择日期"
+      format="yyyy 年 MM 月 dd 日"
+      value-format="yyyy-MM-dd">
+    </el-date-picker>
+  </div>
   </el-form-item>
+
+
   <el-form-item label="年龄" prop="age">
     <el-input v-model.number="form.age"></el-input>
   </el-form-item>
+
    <el-form-item label="性别"  prop="sex">
-    <el-input v-model="form.sex"></el-input>
+    <el-radio-group v-model="form.sex">
+      <el-radio label="男"></el-radio>
+      <el-radio label="女"></el-radio>
+    </el-radio-group>
   </el-form-item>
+
    <el-form-item label="其他"  prop="other">
     <el-input v-model="form.other"></el-input>
   </el-form-item>
@@ -65,7 +88,7 @@
   
   <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
   <el-form 
-      ref="putFormref" 
+      ref="putFormRef" 
       :model="putForm" 
       :rules="putRules" 
       label-width="80px" >
@@ -75,15 +98,30 @@
   <el-form-item label="用户名"  prop="name">
     <el-input v-model="putForm.name"></el-input>
   </el-form-item>
-  <el-form-item label="生日" prop="birthday">
-    <el-input v-model="putForm.birthday"></el-input>
+
+  <el-form-item label="出生日期"  prop="birthday"  >
+   <div class="block">
+    <el-date-picker
+      v-model="putForm.birthday"
+      type="date"
+      placeholder="选择日期"
+      format="yyyy 年 MM 月 dd 日"
+      value-format="yyyy-MM-dd">
+    </el-date-picker>
+  </div>
   </el-form-item>
+  
   <el-form-item label="年龄" prop="age">
     <el-input v-model.number="putForm.age"></el-input>
   </el-form-item>
+
    <el-form-item label="性别"  prop="sex">
-    <el-input v-model="putForm.sex"></el-input>
-  </el-form-item>
+    <el-radio-group v-model="putForm.sex">
+      <el-radio label="男"></el-radio>
+      <el-radio label="女"></el-radio>
+    </el-radio-group>
+   </el-form-item>
+
    <el-form-item label="其他"  prop="other">
     <el-input v-model="putForm.other"></el-input>
   </el-form-item>
@@ -257,7 +295,7 @@ export default {
     // 展示编辑员工对话框
     putShow(id) {
       // 请求该员工的数据
-      console.log("请求该员工的数据" + id);
+      //console.log("请求该员工的数据" + id);
       this.axios
         .get("/v1/getstaff_id", {
           params: {
@@ -277,39 +315,82 @@ export default {
 
     //提交修改用户
     putUser() { 
-      let id = this.putForm.id
-      let name = this.putForm.name
-      let sex = this.putForm.sex
-      //let birthday = this.formateDate(this.putFrom.birthday)
-      let other = this.putForm.other
-      let age = this.putForm.age
-      let poid = this.putForm.poid
-      this.axios.get("/v1/putstaff",{
-        params:{    
-            id: id,
-            name: name,
-            sex: sex,
-            //birthday: birthday,
-            other: other,
-            age: age,
-            poid: poid
-        }   
-      },{})   //注意v1与后端app.use('/v1',router) 对应
-        .then(res => {
-           this.userList = res.data
-           this.getUserList()
-           this.putDialogVisible = false
+ 
+      this.$refs.putFormRef.validate(valid => {
+       if (!valid) return  
+       //this.putForm.birthday
+        console.log(this.putForm.birthday)
+        //debugger
+        this.putForm.birthday = this.formateDate(this.putForm.birthday);
+        this.axios.post("/v1/putstaff", this.putForm).then(res => {
+           //console.log(res)
+          if (res.data.code !== 200) {
+            return this.$message.error({
+              duration: 800,
+              message: "修改失败"
+            });
+          }
+          // 关闭修改对话框
+          this.putDialogVisible = false;
+          // 刷新数据
+          this.getUserList()
+          this.$message.success({
+            duration: 800,
+            message: "修改成功"
+          })
         })
-        .catch(err => {
-          console.log(err)
-        })
-      }
+      })
+      },
     //修改用户
      
     //多条件查询 
     
-    }    
+    
+    // 格式化事件
+    formateDate(datetime) {
+      // let  = "2019-11-06T16:00:00.000Z"
+      function addDateZero(num) {
+        return num < 10 ? "0" + num : num;
+      }
+      let d = new Date(datetime);
+      let formatdatetime =
+        d.getFullYear() +
+        "-" +
+        addDateZero(d.getMonth() + 1) +
+        "-" +
+        addDateZero(d.getDate());
+      return formatdatetime;
+    }  ,
+    
+      dateFormat(date){
+        return moment(date).format("YYYY-MM-DD")
+      }
+    
+
+ 
+  },
+
+  filters: {
+    // 过滤生日
+    dateToAge(value) {
+      let birthday = new Date(value);
+      let d = new Date();
+      // 当前年份 - 出生年份  当前月份 < 出生月份 则 直接减 1岁  当前月份 = 出生月份 且 当前日期 < 出生日期 也减 1岁
+      let age =
+        d.getFullYear() -
+        birthday.getFullYear() -
+        (d.getMonth() < birthday.getMonth() ||
+        (d.getMonth() === birthday.getMonth() &&
+          d.getDate() < birthday.getDate())
+          ? 1
+          : 0);
+      return age;
+    }
+
+ 
+
   }
+}
 
 
  </script>
