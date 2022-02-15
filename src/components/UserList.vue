@@ -13,7 +13,7 @@
       </el-table-column>
 
       <el-table-column prop='birthday'      label="出生日期"  width="240" >
-
+        <template v-slot="scope">{{   dayjs(scope.row.birthday).format('YYYY-MM-DD') }} </template>
       </el-table-column>
 
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
@@ -127,7 +127,7 @@
   </el-form-item>
    <el-form-item label="部门号"  prop="poid">
     <el-input v-model="putForm.poid"></el-input>
-  </el-form-item>
+  </el-form-item>  
 
   </el-form>
 
@@ -141,8 +141,9 @@
 </template> 
 
 <script>
-
+import  dayjs  from  'dayjs'
 import { Message } from 'element-ui';
+
 export default {
   name: 'UserList',
   data(){
@@ -166,7 +167,6 @@ export default {
         name: '',
         sex:'',
         birthday:'',
-        age:'',
         other:'',
         poid:''
 
@@ -176,7 +176,6 @@ export default {
         name: '',
         sex:'',
         birthday:'',
-        age:'',
         other:'',
         poid:''
       },
@@ -189,10 +188,7 @@ export default {
           birthday: [
             { type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
           ],
-          age: [
-            { type: 'number', required: true, message: '请输入年龄', trigger: 'blur' },
-            { validator: checkAge, trigger: 'blur'}
-          ]
+
       },
       putRules: {
           name: [
@@ -233,27 +229,7 @@ export default {
     },
     //新增用户
     NewAddUser() {  
-      //因为不是在此页引入axios,所以要加this.axios  
-      //id, name, sex, birthday, other, age, poid
-      // let id = this.form.id
-      // let name = this.form.name
-      // let sex = this.form.sex
-      // let birthday = this.form.birthday
-      // let other = this.form.other
-      // let age = this.form.age
-      // let poid = this.form.poid
       this.axios.post("/v1/poststaff",this.form   //全部就方便，用数组对象就行
-      // {
-            
-      //       id: id,
-      //       name: name,
-      //       sex: sex,
-      //       birthday: birthday,
-      //       other: other,
-      //       age: age,
-      //       poid: poid
-           
-      // }
       ,{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
@@ -276,7 +252,7 @@ export default {
         type: 'warning',
       }).catch(err => err)
       if(confirmResult !== 'confirm') return this.$message.info('取消了删除！')
-      this.$message.success('删除成功！')
+      this.$message.success('删除用户成功！')
 
 
       this.axios.delete("/v1/delstaff",{
@@ -294,8 +270,6 @@ export default {
     },
     // 展示编辑员工对话框
     putShow(id) {
-      // 请求该员工的数据
-      //console.log("请求该员工的数据" + id);
       this.axios
         .get("/v1/getstaff_id", {
           params: {
@@ -315,60 +289,19 @@ export default {
 
     //提交修改用户
     putUser() { 
- 
-      this.$refs.putFormRef.validate(valid => {
-       if (!valid) return  
-       //this.putForm.birthday
-        console.log(this.putForm.birthday)
-        //debugger
-        this.putForm.birthday = this.formateDate(this.putForm.birthday);
-        this.axios.post("/v1/putstaff", this.putForm).then(res => {
-           //console.log(res)
-          if (res.data.code !== 200) {
-            return this.$message.error({
-              duration: 800,
-              message: "修改失败"
-            });
-          }
-          // 关闭修改对话框
+          this.putForm.birthday = dayjs(this.putForm.birthday).format('YYYY-MM-DD')
+          this.axios.put("/v1/putstaff", this.putForm).then(res => {
+          this.$message.success({ duration: 800, message: "修改用户成功！" })
+          }).catch(error => {
+          console.log(error)
+        })
+         // 关闭修改对话框
           this.putDialogVisible = false;
           // 刷新数据
           this.getUserList()
-          this.$message.success({
-            duration: 800,
-            message: "修改成功"
-          })
-        })
-      })
-      },
-    //修改用户
-     
-    //多条件查询 
-    
-    
-    // 格式化事件
-    formateDate(datetime) {
-      // let  = "2019-11-06T16:00:00.000Z"
-      function addDateZero(num) {
-        return num < 10 ? "0" + num : num;
-      }
-      let d = new Date(datetime);
-      let formatdatetime =
-        d.getFullYear() +
-        "-" +
-        addDateZero(d.getMonth() + 1) +
-        "-" +
-        addDateZero(d.getDate());
-      return formatdatetime;
-    }  ,
-    
-      dateFormat(date){
-        return moment(date).format("YYYY-MM-DD")
-      }
-    
-
- 
-  },
+    }
+  
+},
 
   filters: {
     // 过滤生日

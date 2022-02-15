@@ -9,7 +9,7 @@
     <p>姓名: {{ userInfo.name }} </p>
     <p>性别: {{ userInfo.sex }} </p>
     <p>年龄: {{ userInfo.age }} </p>
-    <p>生日: {{ userInfo.birthday }} </p>
+    <p>生日: {{  dayjs(userInfo.birthday).format('YYYY-MM-DD') }} </p>
   </div>
 </el-card>
 </template>
@@ -18,7 +18,7 @@
   export default {
       name: 'UserDetail',
       props: ['id'],
-      data(){
+      data(){  
           return{ 
               userInfo: []
           } 
