@@ -6,6 +6,8 @@
   </div>
   <div  class="text item">
   <!--<div v-for="(item,id) in userInfo" :key="id" class="text item">  -->
+   
+    <img src="../assets/head01.jpg" style="width: 300px; height: 250px" >
     <p>姓名: {{ userInfo.name }} </p>
     <p>性别: {{ userInfo.sex }} </p>
     <p>年龄: {{ userInfo.age }} </p>
@@ -15,13 +17,13 @@
 </template>
 
 <script>
-  export default {
+  export default { 
       name: 'UserDetail',
       props: ['id'],
       data(){  
-          return{ 
-              userInfo: []
-          } 
+        return{ 
+          userInfo: []
+        } 
       },
       created(){
           this.getUserInfo()

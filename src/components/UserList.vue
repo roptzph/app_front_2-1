@@ -7,23 +7,19 @@
       <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
       <el-table-column prop="name"      label="姓名"  width="110"></el-table-column>
       <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
-<<<<<<< HEAD
-      <el-table-column prop="birthday"       label="年龄"  width="50">
-        <template v-slot="scope">{{ scope.row.birthday | dateToAge }}</template>
-      </el-table-column>
-      <el-table-column prop="birthday"  label="生日"  width="250">
-      </el-table-column>
-=======
 
       <el-table-column prop="birthday"       label="年龄"  width="50">
         <template v-slot="scope">{{ scope.row.birthday | dateToAge }} </template>
       </el-table-column>
 
-      <el-table-column prop='birthday'      label="出生日期"  width="240" >
+      <el-table-column prop='birthday'      label="出生日期"  width="100" >
         <template v-slot="scope">{{   dayjs(scope.row.birthday).format('YYYY-MM-DD') }} </template>
       </el-table-column>
 
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
+      <el-table-column prop='poid'      label="部门"  width="100" >  
+        <template v-slot="scope">{{ scope.row.poid | idToName(dept) }} </template>
+      </el-table-column>
+
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
       <el-table-column prop="work"    filter-multiple label="操作" width="200" >
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
@@ -50,21 +46,6 @@
   <el-form-item label="用户名"  prop="name">
     <el-input v-model="form.name"></el-input>
   </el-form-item>
-<<<<<<< HEAD
-  <el-form-item label="生日" prop="birthday">
-    <!--<el-input v-model="form.birthday"></el-input>  -->
-<el-col :span="9">
-            <el-form-item prop="birthday">
-              <el-date-picker
-                format="yyyy 年 MM 月 dd 日"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期"
-                v-model="from.birthday"
-                style="width: 100%;"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-=======
 
   <el-form-item label="出生日期"  prop="birthday" required >
    <div class="block">
@@ -76,7 +57,6 @@
       value-format="yyyy-MM-dd">
     </el-date-picker>
   </div>
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
   </el-form-item>
 
 
@@ -85,24 +65,21 @@
   </el-form-item>
 
    <el-form-item label="性别"  prop="sex">
-<<<<<<< HEAD
-    <!--<el-input v-model="form.sex"></el-input>  -->
-      <el-radio v-model="form.sex" label="男">男</el-radio>
-      <el-radio v-model="form.sex" label="女">女</el-radio>
-=======
     <el-radio-group v-model="form.sex">
       <el-radio label="男"></el-radio>
       <el-radio label="女"></el-radio>
     </el-radio-group>
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
   </el-form-item>
 
    <el-form-item label="其他"  prop="other">
     <el-input v-model="form.other"></el-input>
   </el-form-item>
-   <el-form-item label="部门号"  prop="poid">
-    <el-input v-model="form.poid"></el-input>
-  </el-form-item>
+
+        <el-form-item label="部门" prop="poid">
+          <el-select v-model="form.poid" placeholder="请选择部门">
+            <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+        </el-form-item>
 
   </el-form>
 
@@ -128,15 +105,6 @@
   <el-form-item label="用户名"  prop="name">
     <el-input v-model="putForm.name"></el-input>
   </el-form-item>
-<<<<<<< HEAD
-  <el-form-item label="生日" prop="birthday">
-    <!--<el-input v-model="putForm.birthday"></el-input>  -->
-    <div class="block">
-    <el-date-picker
-      v-model="birthday"
-      type="date"
-      placeholder="选择日期">
-=======
 
   <el-form-item label="出生日期"  prop="birthday"  >
    <div class="block">
@@ -146,7 +114,6 @@
       placeholder="选择日期"
       format="yyyy 年 MM 月 dd 日"
       value-format="yyyy-MM-dd">
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
     </el-date-picker>
   </div>
   </el-form-item>
@@ -154,13 +121,6 @@
   <el-form-item label="年龄" prop="age">
     <el-input v-model.number="putForm.age"></el-input>
   </el-form-item>
-<<<<<<< HEAD
-   <el-form-item label="性别"  prop="sexRadio">
-      <!--<el-input v-model="putForm.sex"></el-input> -->
-      <el-radio v-model="putForm.sex" label="男">男</el-radio>
-      <el-radio v-model="putForm.sex" label="女">女</el-radio>
-  </el-form-item>
-=======
 
    <el-form-item label="性别"  prop="sex">
     <el-radio-group v-model="putForm.sex">
@@ -169,13 +129,18 @@
     </el-radio-group>
    </el-form-item>
 
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
+
+
+ <el-form-item label="部门" prop="poid">
+          <el-select v-model="putForm.poid" placeholder="请选择部门">
+            <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
+          </el-select>
+</el-form-item>
+
    <el-form-item label="其他"  prop="other">
     <el-input v-model="putForm.other"></el-input>
   </el-form-item>
-   <el-form-item label="部门号"  prop="poid">
-    <el-input v-model="putForm.poid"></el-input>
-  </el-form-item>  
+
 
   </el-form>
 
@@ -207,6 +172,8 @@ export default {
        callback()
      }
     return{
+      that: this,   //只要这一步  +{{ scope.row.poid | idToName(that) }}  最优
+      dept: [],
       userList: [],
       dialogVisible:false,
       putDialogVisible:false,
@@ -223,14 +190,8 @@ export default {
       putForm : {
         id: '',
         name: '',
-<<<<<<< HEAD
-        sex:'1',
-        birthday: '',
-        age:'',
-=======
         sex:'',
         birthday:'',
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
         other:'',
         poid:''
       },
@@ -262,20 +223,28 @@ export default {
   },
   created(){
     this.getUserList()
+    this.getDept()
   },
-  
-filters: {
-    formatDate(time) {
-    var date = new Date(time);
-    return formatDate(date, 'yyyy-MM-dd');
-   }
-},
+  //beforeCreate() {
+   // that = this
+ // },
+
   methods: {
     getUserList() {  
       //因为不是在此页引入axios,所以要加this.axios  
       this.axios.get("/v1/getstaff")   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
            this.userList = res.data
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    getDept() {  
+      //因为不是在此页引入axios,所以要加this.axios  
+      this.axios.get("/v1/getDept")   //注意v1与后端app.use('/v1',router) 对应
+        .then(res => {
+           this.dept = res.data
         })
         .catch(err => {
           console.log(err)
@@ -291,20 +260,6 @@ filters: {
     },
     //新增用户
     NewAddUser() {  
-<<<<<<< HEAD
-      //因为不是在此页引入axios,所以要加this.axios  
-      //id, name, sex, birthday, other, age, poid
-      // let id = this.form.id
-      // let name = this.form.name
-      // let sex = this.form.sex
-      // let birthday = this.form.birthday
-      // let other = this.form.other
-      // let age = this.form.age
-      // let poid = this.form.poid
-
-      //console.log(this.form.birthday)
-=======
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
       this.axios.post("/v1/poststaff",this.form   //全部就方便，用数组对象就行
       ,{})   //注意v1与后端app.use('/v1',router) 对应
         .then(res => {
@@ -346,12 +301,6 @@ filters: {
     },
     // 展示编辑员工对话框
     putShow(id) {
-<<<<<<< HEAD
-      // 请求该员工的数据
-
-      console.log("请求该员工的数据" + id);
-=======
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
       this.axios
         .get("/v1/getstaff_id", {
           params: {
@@ -371,60 +320,6 @@ filters: {
 
     //提交修改用户
     putUser() { 
-<<<<<<< HEAD
-      let id = this.putForm.id
-      let name = this.putForm.name
-      let sex = this.putForm.sex
-      //let birthday =  moment(birthday).format("YYYY-MM-DD")
-      //let birthday = this.formateDate(this.putFrom.birthday)
-      let other = this.putForm.other
-      let age = this.putForm.age
-      let poid = this.putForm.poid
-      this.axios.get("/v1/putstaff",{
-        params:{    
-            id: id,
-            name: name,
-            sex: sex,
-            //birthday: birthday,
-            other: other,
-            age: age,
-            poid: poid
-        }   
-      },{})   //注意v1与后端app.use('/v1',router) 对应
-        .then(res => {
-           this.userList = res.data
-           this.getUserList()
-           this.putDialogVisible = false
-           
-        })
-        .catch(err => {
-          console.log(err)
-        })
-
-      },
-    //修改用户
-     
-    //多条件查询 
-    // 格式化事件
-    formateDate(datetime) {
-      // let  = "2019-11-06T16:00:00.000Z"
-      function addDateZero(num) {
-        return num < 10 ? "0" + num : num;
-      }
-      let d = new Date(datetime);
-      let formatdatetime =
-        d.getFullYear() +
-        "-" +
-        addDateZero(d.getMonth() + 1) +
-        "-" +
-        addDateZero(d.getDate());
-      return formatdatetime;
-    }
-    },
-  filters: {
-    // 过滤生日
-    dateToAge: function(value) {
-=======
           this.putForm.birthday = dayjs(this.putForm.birthday).format('YYYY-MM-DD')
           this.axios.put("/v1/putstaff", this.putForm).then(res => {
           this.$message.success({ duration: 800, message: "修改用户成功！" })
@@ -442,7 +337,6 @@ filters: {
   filters: {
     // 过滤生日
     dateToAge(value) {
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
       let birthday = new Date(value);
       let d = new Date();
       // 当前年份 - 出生年份  当前月份 < 出生月份 则 直接减 1岁  当前月份 = 出生月份 且 当前日期 < 出生日期 也减 1岁
@@ -455,15 +349,33 @@ filters: {
           ? 1
           : 0);
       return age;
+    },
+
+    //方法一  1. {{ scope.row.poid | idToName(dept) }}  
+  //idToName(deptid,dept){
+      //let result = ''
+      //dept.forEach(item => {
+      //  if(item.id === deptid) { result = item.name }//不能直接RETURNT的
+      //})
+      //return result
+    //}
+    //方法二  容易理解 1.that:this 2.  {{ scope.row.poid | idToName(that) }}
+   // idToName(id,that){
+    //  let deptname = ''
+    //  for (var i=0;i< that.dept.length ;i++){
+    //    if(that.dept[i].id === id)  deptname = that.dept[i].name
+    //}
+   //  return deptname
+  //  }
+
+    //方法三 最优
+    idToName(deptid,dept){
+      let result = ''
+      for ( let item of dept ) {
+         if ( item.id === deptid )   result = item.name }
+      return result
     }
-<<<<<<< HEAD
-  }    
-=======
-
- 
-
   }
->>>>>>> 263ebc607b057ac68e83d6e127695cfd83fc4c99
 }
 
 
