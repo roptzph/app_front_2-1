@@ -6,6 +6,8 @@ const bodyParser = require('body-parser')
 import EIementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
+import { formatDate } from '../common/data.js'
+
 import axios from 'axios'
 //这句一定要，如果没有的话，在UserList中要引入上面axios
 Vue.prototype.axios = axios 

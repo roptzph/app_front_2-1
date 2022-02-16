@@ -5,8 +5,11 @@
       <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
       <el-table-column prop="name"      label="姓名"  width="140"></el-table-column>
       <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
-      <el-table-column prop="age"       label="年龄"  width="50"></el-table-column>
-      <el-table-column prop="birthday"  label="生日"  width="250"></el-table-column>
+      <el-table-column prop="birthday"       label="年龄"  width="50">
+        <template v-slot="scope">{{ scope.row.birthday | dateToAge }}</template>
+      </el-table-column>
+      <el-table-column prop="birthday"  label="生日"  width="250">
+      </el-table-column>
       <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
       <el-table-column prop="work"    filter-multiple label="操作"> 
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
@@ -34,13 +37,26 @@
     <el-input v-model="form.name"></el-input>
   </el-form-item>
   <el-form-item label="生日" prop="birthday">
-    <el-input v-model="form.birthday"></el-input>
+    <!--<el-input v-model="form.birthday"></el-input>  -->
+<el-col :span="9">
+            <el-form-item prop="birthday">
+              <el-date-picker
+                format="yyyy 年 MM 月 dd 日"
+                value-format="yyyy-MM-dd"
+                placeholder="选择日期"
+                v-model="from.birthday"
+                style="width: 100%;"
+              ></el-date-picker>
+            </el-form-item>
+          </el-col>
   </el-form-item>
   <el-form-item label="年龄" prop="age">
     <el-input v-model.number="form.age"></el-input>
   </el-form-item>
    <el-form-item label="性别"  prop="sex">
-    <el-input v-model="form.sex"></el-input>
+    <!--<el-input v-model="form.sex"></el-input>  -->
+      <el-radio v-model="form.sex" label="男">男</el-radio>
+      <el-radio v-model="form.sex" label="女">女</el-radio>
   </el-form-item>
    <el-form-item label="其他"  prop="other">
     <el-input v-model="form.other"></el-input>
@@ -74,13 +90,22 @@
     <el-input v-model="putForm.name"></el-input>
   </el-form-item>
   <el-form-item label="生日" prop="birthday">
-    <el-input v-model="putForm.birthday"></el-input>
+    <!--<el-input v-model="putForm.birthday"></el-input>  -->
+    <div class="block">
+    <el-date-picker
+      v-model="birthday"
+      type="date"
+      placeholder="选择日期">
+    </el-date-picker>
+  </div>
   </el-form-item>
   <el-form-item label="年龄" prop="age">
     <el-input v-model.number="putForm.age"></el-input>
   </el-form-item>
-   <el-form-item label="性别"  prop="sex">
-    <el-input v-model="putForm.sex"></el-input>
+   <el-form-item label="性别"  prop="sexRadio">
+      <!--<el-input v-model="putForm.sex"></el-input> -->
+      <el-radio v-model="putForm.sex" label="男">男</el-radio>
+      <el-radio v-model="putForm.sex" label="女">女</el-radio>
   </el-form-item>
    <el-form-item label="其他"  prop="other">
     <el-input v-model="putForm.other"></el-input>
@@ -106,7 +131,7 @@ import { Message } from 'element-ui';
 export default {
   name: 'UserList',
   data(){
-
+      //let birthday =  moment(birthday).format("YYYY-MM-DD")
      //声明校验年龄的函数
      let checkAge = (rule,value,callback) =>{
        if (!Number.isInteger(value)){
@@ -124,18 +149,19 @@ export default {
       form : {
         id: '',
         name: '',
-        sex:'',
+        sex:'男',
         birthday:'',
         age:'',
         other:'',
         poid:''
+        
 
       },
       putForm : {
         id: '',
         name: '',
-        sex:'',
-        birthday:'',
+        sex:'1',
+        birthday: '',
         age:'',
         other:'',
         poid:''
@@ -172,6 +198,13 @@ export default {
   created(){
     this.getUserList()
   },
+  
+filters: {
+    formatDate(time) {
+    var date = new Date(time);
+    return formatDate(date, 'yyyy-MM-dd');
+   }
+},
   methods: {
     getUserList() {  
       //因为不是在此页引入axios,所以要加this.axios  
@@ -201,6 +234,8 @@ export default {
       // let other = this.form.other
       // let age = this.form.age
       // let poid = this.form.poid
+
+      //console.log(this.form.birthday)
       this.axios.post("/v1/poststaff",this.form   //全部就方便，用数组对象就行
       // {
             
@@ -255,6 +290,7 @@ export default {
     // 展示编辑员工对话框
     putShow(id) {
       // 请求该员工的数据
+
       console.log("请求该员工的数据" + id);
       this.axios
         .get("/v1/getstaff_id", {
@@ -277,6 +313,7 @@ export default {
       let id = this.putForm.id
       let name = this.putForm.name
       let sex = this.putForm.sex
+      //let birthday =  moment(birthday).format("YYYY-MM-DD")
       //let birthday = this.formateDate(this.putFrom.birthday)
       let other = this.putForm.other
       let age = this.putForm.age
@@ -295,17 +332,51 @@ export default {
         .then(res => {
            this.userList = res.data
            this.getUserList()
+           this.putDialogVisible = false
+           
         })
         .catch(err => {
           console.log(err)
         })
-      }
+
+      },
     //修改用户
      
     //多条件查询 
-    
-    }    
-  }
+    // 格式化事件
+    formateDate(datetime) {
+      // let  = "2019-11-06T16:00:00.000Z"
+      function addDateZero(num) {
+        return num < 10 ? "0" + num : num;
+      }
+      let d = new Date(datetime);
+      let formatdatetime =
+        d.getFullYear() +
+        "-" +
+        addDateZero(d.getMonth() + 1) +
+        "-" +
+        addDateZero(d.getDate());
+      return formatdatetime;
+    }
+    },
+  filters: {
+    // 过滤生日
+    dateToAge: function(value) {
+      let birthday = new Date(value);
+      let d = new Date();
+      // 当前年份 - 出生年份  当前月份 < 出生月份 则 直接减 1岁  当前月份 = 出生月份 且 当前日期 < 出生日期 也减 1岁
+      let age =
+        d.getFullYear() -
+        birthday.getFullYear() -
+        (d.getMonth() < birthday.getMonth() ||
+        (d.getMonth() === birthday.getMonth() &&
+          d.getDate() < birthday.getDate())
+          ? 1
+          : 0);
+      return age;
+    }
+  }    
+}
 
 
  </script>
