@@ -1,7 +1,7 @@
 <template>
    <el-card class="box-card" width="30%">
   <div slot="header" class="clearfix">
-    <span>用户详情</span>
+    <span><h3>用户详情</h3></span>
     <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">返回</el-button>
   </div>
   <div  class="text item">
@@ -9,7 +9,7 @@
     <p>姓名: {{ userInfo.name }} </p>
     <p>性别: {{ userInfo.sex }} </p>
     <p>年龄: {{ userInfo.age }} </p>
-    <p>生日: {{ userInfo.birthday }} </p>
+    <p>生日: {{  dayjs(userInfo.birthday).format('YYYY-MM-DD') }} </p>
   </div>
 </el-card>
 </template>
@@ -18,7 +18,7 @@
   export default {
       name: 'UserDetail',
       props: ['id'],
-      data(){
+      data(){  
           return{ 
               userInfo: []
           } 
