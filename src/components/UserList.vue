@@ -4,24 +4,37 @@
     <h1 >用户列表资料</h1>
     <el-button type="primary" @click="dialogVisible = true">添加用户</el-button>
   <el-table :data="userList"    stripe  border  style="width: 50%" >
-      <el-table-column prop="id"      label="编号"  width="100">  </el-table-column>
-      <el-table-column prop="name"      label="姓名"  width="110"></el-table-column>
-      <el-table-column prop="sex"       label="姓别"  width="50"></el-table-column>
 
-      <el-table-column prop="birthday"       label="年龄"  width="50">
+      <el-table-column prop="imgurl"  align="center"    label="照片"  width="100px"> 
+      <template v-slot="scope">
+        <img :src="scope.row.imgurl" style="width: 80px; height: 100px" alt="照片" >
+      </template>
+     
+     
+      </el-table-column>
+
+      <el-table-column prop="id"  align="center"    label="编号"  width="100">  </el-table-column>
+      <el-table-column prop="name"   align="center"   label="姓名"  width="110"></el-table-column>
+      <el-table-column prop="sex"   align="center"    label="姓别"  width="50"></el-table-column>
+
+      <el-table-column prop="birthday"   align="center"    label="年龄"  width="70">
         <template v-slot="scope">{{ scope.row.birthday | dateToAge }} </template>
       </el-table-column>
 
-      <el-table-column prop='birthday'      label="出生日期"  width="100" >
+      <el-table-column prop='birthday'   align="center"   label="出生日期"  width="100" >
         <template v-slot="scope">{{   dayjs(scope.row.birthday).format('YYYY-MM-DD') }} </template>
       </el-table-column>
 
-      <el-table-column prop='poid'      label="部门"  width="100" >  
+      <el-table-column prop='poid'  align="center"    label="部门"  width="100" >  
         <template v-slot="scope">{{ scope.row.poid | idToName(dept) }} </template>
       </el-table-column>
 
-      <el-table-column prop="other"    filter-multiple label="其他"> </el-table-column>
-      <el-table-column prop="work"    filter-multiple label="操作" width="200" >
+        <el-table-column prop='putdate'   align="center"   label="修改日期"  width="160" >
+        <template v-slot="scope">{{   dayjs(scope.row.putdate).format('YYYY-MM-DD HH:mm:ss') }} </template>
+      </el-table-column>
+
+      <el-table-column prop="other"  align="center"  filter-multiple label="其他"  width="80"> </el-table-column>
+      <el-table-column prop="work"  align="center"  filter-multiple label="操作" width="200" >
         <template v-slot="scope">  <!--v-slot:defult or  #defult    ;   "{row}"  对应  row.id-->
           <div>
             <router-link :to="'/users/' + scope.row.id">详情</router-link>  &nbsp
@@ -36,15 +49,13 @@
 
   <!--增加添加用户的对话框-->
 
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="30%" @close="onDialogClose" >
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="20%" @close="onDialogClose" >
   
   <!--在对话框内增加表单-->
   <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
-  <el-form-item label="代号"  prop="id">
-    <el-input v-model="form.id"></el-input>
-  </el-form-item>
-  <el-form-item label="用户名"  prop="name">
-    <el-input v-model="form.name"></el-input>
+ 
+  <el-form-item label="用户名"  prop="name" >
+    <el-input v-model="form.name"  style="width:180px"></el-input>
   </el-form-item>
 
   <el-form-item label="出生日期"  prop="birthday" required >
@@ -60,9 +71,7 @@
   </el-form-item>
 
 
-  <el-form-item label="年龄" prop="age">
-    <el-input v-model.number="form.age"></el-input>
-  </el-form-item>
+
 
    <el-form-item label="性别"  prop="sex">
     <el-radio-group v-model="form.sex">
@@ -71,15 +80,17 @@
     </el-radio-group>
   </el-form-item>
 
-   <el-form-item label="其他"  prop="other">
-    <el-input v-model="form.other"></el-input>
-  </el-form-item>
+   
 
         <el-form-item label="部门" prop="poid">
           <el-select v-model="form.poid" placeholder="请选择部门">
             <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
+
+        <el-form-item label="其他"  prop="other" style="width:300px" >
+    <el-input v-model="form.other"></el-input>
+  </el-form-item>
 
   </el-form>
 
@@ -91,7 +102,7 @@
  
   <!--增加修改用户的对话框-->
 
-  <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="30%" @close="onDialogClose" >
+  <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="20%" @close="onDialogClose" >
   
   <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
   <el-form 
@@ -99,10 +110,11 @@
       :model="putForm" 
       :rules="putRules" 
       label-width="80px" >
-  <el-form-item label="代号"  prop="id">
-    <el-input v-model="putForm.id"></el-input>
+ 
+  <el-form-item label="用户编号"  prop="id" >
+    <el-input v-model="putForm.id" :disabled="true"style="width:240px"  ></el-input>
   </el-form-item>
-  <el-form-item label="用户名"  prop="name">
+  <el-form-item label="用户名"  prop="name" style="width:240px">
     <el-input v-model="putForm.name"></el-input>
   </el-form-item>
 
@@ -118,9 +130,7 @@
   </div>
   </el-form-item>
   
-  <el-form-item label="年龄" prop="age">
-    <el-input v-model.number="putForm.age"></el-input>
-  </el-form-item>
+
 
    <el-form-item label="性别"  prop="sex">
     <el-radio-group v-model="putForm.sex">
@@ -137,7 +147,7 @@
           </el-select>
 </el-form-item>
 
-   <el-form-item label="其他"  prop="other">
+   <el-form-item label="其他"  prop="other" style="width:300px">
     <el-input v-model="putForm.other"></el-input>
   </el-form-item>
 
