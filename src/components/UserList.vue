@@ -3,13 +3,12 @@
   <div>
     <h1 >用户列表资料</h1>
     <el-button type="primary" @click="dialogVisible = true">添加用户</el-button>
-  <el-table :data="userList"    stripe  border  style="width: 50%" >
+  <el-table :data="userList"    stripe  border  style="width: 60%" >
 
       <el-table-column prop="imgurl"  align="center"    label="照片"  width="100px"> 
       <template v-slot="scope">
-        <img :src="scope.row.imgurl" style="width: 80px; height: 100px" alt="照片" >
+        <img :src="scope.row.imgurl" style="width: 35px; height: 40px" alt="照片" >
       </template>
-     
      
       </el-table-column>
 
@@ -49,7 +48,7 @@
 
   <!--增加添加用户的对话框-->
 
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="20%" @close="onDialogClose" >
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="25%" @close="onDialogClose" >
   
   <!--在对话框内增加表单-->
   <el-form ref="form" :model="form" :rules="rules" label-width="80px" >

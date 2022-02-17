@@ -7,9 +7,9 @@
   <div  class="text item">
   <!--<div v-for="(item,id) in userInfo" :key="id" class="text item">  
    
-    <img :src="require('../assets/'+userInfo.imgurl)" style="width: 300px; height: 250px" alt="照片" >-->
-    <img :src="require('@/assets/head03.jpg')" style="width: 300px; height: 250px" alt="照片" >
-   <!-- <img :src="userInfo.imgurl" style="width: 300px; height: 250px" alt="照片" >-->
+    <img :src="require('../assets/'+userInfo.imgurl)" style="width: 300px; height: 250px" alt="照片" >
+    <img :src="require('@/assets/head03.jpg')" style="width: 300px; height: 250px" alt="照片" >   --> 
+    <img :src="userInfo.imgurl" style="width:280px; height: 300px" alt="照片" >  
     <p>姓名: {{ userInfo.name }} </p>
     <p>性别: {{ userInfo.sex }} </p>
     <p>年龄: {{ userInfo.age }} </p>
@@ -24,7 +24,8 @@
       props: ['id'],
       data(){  
         return{ 
-          userInfo: []
+          userInfo: [],
+          imgs: ['']
         } 
       },
       created(){
