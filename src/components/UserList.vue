@@ -2,16 +2,39 @@
   
   <div>
     <h1 >用户列表资料</h1> <br>
-    <el-button type="primary" @click="dialogVisible = true">添加用户</el-button> <br>
-   <!-- <label for="">显示照片开关</label>  &nbsp  
-          <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>   -->
+    <el-button type="primary" @click="dialogVisible = true"   >添加用户</el-button> &nbsp
+    搜索条件：
+    <el-input v-model="findForm.name" clearable placeholder="输入姓名" style="width:100px" ></el-input>  &nbsp
+
+<el-select v-model="valueSex" align="center" clearable placeholder="选择性别" style="width:140px"> 
+    <el-option
+      v-for="item in optionSex"
+      :key="item.label"
+      :label="item.valueSex"
+      :value="item.label"
+>
+    </el-option>
+  </el-select>  &nbsp
+   <el-input v-model="age1" clearable placeholder="起始年龄" style="width:120px"></el-input>   -
+   <el-input v-model="age2" clearable placeholder="结束年龄" style="width:120px"></el-input> &nbsp
+
+ 
+      <el-select v-model="findForm.poid" clearable placeholder="选择部门" style="width:150px" >
+         <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
+      </el-select>  
+ &nbsp
+
+    <el-button type="primary" @click="findUser" plain>开始查询</el-button><br>
+
+   <!--<label for="">显示照片开关</label>  &nbsp  
+          <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>  -->
+          <el-checkbox v-model="isPhoto">显示隐藏照片</el-checkbox> 
   <el-table :data="userList"    stripe  border  style="width: 50%" >  
 
       <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
       <template v-slot="scope">
-        <img :src="scope.row.imgurl" style="width: 80px; height: 100px" alt="照片" >
+        <img :src="scope.row.imgurl" style="width: 35px; height: 40px" alt="照片" >
       </template>
-     
      
       </el-table-column>
 
@@ -21,6 +44,9 @@
 
       <el-table-column prop="birthday"   align="center"    label="年龄"  width="70">
         <template v-slot="scope">{{ scope.row.birthday | dateToAge }} </template>
+      </el-table-column>
+      <el-table-column prop="age"   align="center"    label="年龄2"  width="70">
+
       </el-table-column>
 
       <el-table-column prop='birthday'   align="center"   label="出生日期"  width="100" >
@@ -51,7 +77,7 @@
 
   <!--增加添加用户的对话框-->
 
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="20%" @close="onDialogClose" >
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="25%" @close="onDialogClose" >
   
   <!--在对话框内增加表单-->
   <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
@@ -59,6 +85,12 @@
   <el-form-item label="用户名"  prop="name" >
     <el-input v-model="form.name"  style="width:180px"></el-input>
   </el-form-item>
+
+  <el-form-item label="身份证" prop="idcard">
+      <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
+  </el-form-item>
+
+
 
   <el-form-item label="出生日期"  prop="birthday" required >
    <div class="block">
@@ -73,14 +105,19 @@
   </el-form-item>
 
 
+<el-form-item label="年龄"  prop="age" style="width:30px" > 
+  <el-input v-model="form.age" placeholder="输入年龄" style="width: 50px;"/>
+   </el-form-item>
+<el-form-item label="性别"  prop="sex" style="width:30px" > 
+  <el-input v-model="form.sex" placeholder="性别" style="width: 50px;"/>
+   </el-form-item>
 
-
-   <el-form-item label="性别"  prop="sex">
+ <!--  <el-form-item label="性别"  prop="sex">
     <el-radio-group v-model="form.sex">
       <el-radio label="男"></el-radio>
       <el-radio label="女"></el-radio>
     </el-radio-group>
-  </el-form-item>
+  </el-form-item>  -->
 
    
 
@@ -190,16 +227,30 @@ export default {
       dialogVisible:false,
       putDialogVisible:false,
       isPhoto: true,
+      optionSex: [{ valueSex: '男',label:'男' }, { valueSex: '女',label: '女'  }],
+      valueSex: '',
+      age1: '',
+      age2: '',
       form : {
         id: '',
         name: '',
-        sex:'男',
+        idcard: '',
+        sex:'',
         birthday:'',
         other:'',
         poid:''
-        
-
       },
+      
+      findForm : {
+        id: '',
+        name: '',
+        sex:'',
+        birthday:'',
+        other:'',
+        poid:'',
+        age: ''
+      },
+      //poid: '',
       putForm : {
         id: '',
         name: '',
@@ -213,6 +264,9 @@ export default {
           name: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
             { min: 3, max:15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+          ],
+          idcard: [{ required: true, message: '身份证号不能为空', trigger: 'blur' },
+          { validator: this.validID, trigger: 'blur' }
           ],
           birthday: [
             { type: 'date', required: true, message: '请选择日期', trigger: 'blur' }
@@ -235,12 +289,10 @@ export default {
     }
   },
   created(){
+    //this.getUserList()
     this.getUserList()
     this.getDept()
   },
-  //beforeCreate() {
-   // that = this
- // },
 
   methods: {
     getUserList() {  
@@ -253,6 +305,32 @@ export default {
           console.log(err)
         })
     },
+        // 根据条件查询
+    findUser() {
+      let  name = this.findForm.name
+      let  sex = this.valueSex
+      let poid = this.findForm.poid
+      let age1 = this.age1
+      let age2 = this.age2
+      this.axios
+        .get("/v1/findstaff", {
+          params: {
+            name: name,
+            sex: sex,
+            poid: poid,
+            age1: age1,
+            age2: age2
+          }
+        })
+        .then(res => {
+          this.userList = res.data   //Invalid prop: type check failed for prop "model". Expected Object, got Array
+          
+        })
+        .catch(error => {
+          console.log(error)
+        });
+      // 展示编辑对话框
+       },
     getDept() {  
       //因为不是在此页引入axios,所以要加this.axios  
       this.axios.get("/v1/getDept")   //注意v1与后端app.use('/v1',router) 对应
@@ -331,6 +409,7 @@ export default {
       this.putDialogVisible = true
     },
 
+
     //提交修改用户
     putUser() { 
           this.putForm.birthday = dayjs(this.putForm.birthday).format('YYYY-MM-DD')
@@ -343,7 +422,53 @@ export default {
           this.putDialogVisible = false;
           // 刷新数据
           this.getUserList()
-    }
+    },
+    // 身份证验证
+    async validID(rule,value,callback)
+    {
+      // 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
+      let reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (reg.test(value)) {
+        await this.go(value.length);
+        callback()
+      } else {
+        callback(new Error('身份证号码不正确'))
+      }
+    },
+ 
+    // 实现自动生成生日，性别，年龄
+    go(val) {
+      let iden = this.form.idcard;
+      let sex = null;
+      let birth = null;
+      let myDate = new Date();
+      let month = myDate.getMonth() + 1;
+      let day = myDate.getDate();
+      let age = 0;
+ 
+      if(val===18){
+        age = myDate.getFullYear() - iden.substring(6, 10) - 1;
+        sex = iden.substring(16,17);
+        birth = iden.substring(6,10)+"-"+iden.substring(10,12)+"-"+iden.substring(12,14);
+        if (iden.substring(10, 12) < month || iden.substring(10, 12) == month && iden.substring(12, 14) <= day) age++;
+ 
+      }
+      if(val===15){
+        age = myDate.getFullYear() - iden.substring(6, 8) - 1901;
+        sex = iden.substring(13,14);
+        birth = "19"+iden.substring(6,8)+"-"+iden.substring(8,10)+"-"+iden.substring(10,12);
+        if (iden.substring(8, 10) < month || iden.substring(8, 10) == month && iden.substring(10, 12) <= day) age++;
+      }
+ 
+      if(sex%2 === 0)
+        sex = '女';  //
+      else
+        sex = '男';
+      //性别  ==> 1:男       0:女
+      this.form.sex = sex;
+      this.form.age = age;
+      this.form.birthday = birth;
+    },
   
 },
 
