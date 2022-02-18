@@ -1,11 +1,13 @@
 <template>
   
   <div>
-    <h1 >用户列表资料</h1>
-    <el-button type="primary" @click="dialogVisible = true">添加用户</el-button>
-  <el-table :data="userList"    stripe  border  style="width: 50%" >
+    <h1 >用户列表资料</h1> <br>
+    <el-button type="primary" @click="dialogVisible = true">添加用户</el-button> <br>
+   <!-- <label for="">显示照片开关</label>  &nbsp  
+          <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>   -->
+  <el-table :data="userList"    stripe  border  style="width: 50%" >  
 
-      <el-table-column prop="imgurl"  align="center"    label="照片"  width="100px"> 
+      <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
       <template v-slot="scope">
         <img :src="scope.row.imgurl" style="width: 80px; height: 100px" alt="照片" >
       </template>
@@ -187,6 +189,7 @@ export default {
       userList: [],
       dialogVisible:false,
       putDialogVisible:false,
+      isPhoto: true,
       form : {
         id: '',
         name: '',
