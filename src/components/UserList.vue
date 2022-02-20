@@ -90,19 +90,18 @@
       <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
   </el-form-item>
 
-<el-form-item label="照片" prop="imgurl">
+<el-form-item label="上传照片" prop="imgurl">
 
-<el-upload
-    action="https://jsonplaceholder.typicode.com/posts/"
-    list-type="picture-card"
-    :on-preview="handlePictureCardPreview"
-    :on-remove="handleRemove"
-  >
-    <el-icon><plus /></el-icon>
-  </el-upload>
-  <el-dialog v-model="dialogVisible">
-    <img width="100%" :src="dialogImageUrl" alt="" />
-  </el-dialog>
+
+ <el-upload
+  class="avatar-uploader"
+  action
+  :show-file-list="fasle"
+  :before-upload="beforeAvatarUpload"
+  :http-request="uploadPic">
+  <img v-if="form.imgurl" :src="form.imgurl"  class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload>
 
 
 
@@ -235,8 +234,8 @@ export default {
        }
        callback()
      }
-    return{
-      that: this,   //只要这一步  +{{ scope.row.poid | idToName(that) }}  最优
+    return {
+     // 图片上传组件
       dept: [],
       userList: [],
       dialogVisible:false,
@@ -246,15 +245,14 @@ export default {
       valueSex: '',
       age1: '',
       age2: '',
-      imgurl: '',
       form : {
-        id: '',
         name: '',
-        idcard: '',
+        card: '',
         sex:'',
         birthday:'',
         other:'',
-        poid:''
+        poid:'',
+        imgurl: ''
       },
       
       findForm : {
@@ -408,6 +406,7 @@ export default {
     },
     // 展示编辑员工对话框
     putShow(id) {
+
       this.axios
         .get("/v1/getstaff_id", {
           params: {
@@ -485,7 +484,26 @@ export default {
       this.form.age = age;
       this.form.birthday = birth;
     },
-  
+    //上传图片
+    uploadPic(f){
+      console.log(f)
+      let formData = new FormData()
+      formData.append('file', f.file)
+      this.axios({
+        method: 'post',
+        url: '/v1/upload',
+        data: formData
+      }).then(res =>{
+           //上传成功之后 显示图片
+          this.form.imgurl = res.data.url
+
+      })
+    },
+
+      beforeAvatarUpload(){
+
+      }
+
 },
 
   filters: {
@@ -529,21 +547,8 @@ export default {
          if ( item.id === deptid )   result = item.name }
       return result
     },
-     handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
 
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      }
+
     
   }
 }
@@ -551,8 +556,8 @@ export default {
 
  </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
-  .avatar-uploader .el-upload {
+<style >
+.avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;
