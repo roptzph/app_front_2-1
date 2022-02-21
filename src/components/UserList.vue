@@ -1,5 +1,5 @@
 <template>
-  
+ 
   <div>
     <h1 >用户列表资料</h1> <br>
     <el-button type="primary" @click="dialogVisible = true"   >添加用户</el-button> &nbsp
@@ -74,13 +74,14 @@
       </el-table-column>
 
   </el-table>
+  
 
   <!--增加添加用户的对话框-->
-
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="40%" @close="onDialogClose" >
+<div>
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="60%" @close="onDialogClose" >
   
   <!--在对话框内增加表单-->
-  <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
+  <el-form ref="form" :model="form" :rules="rules" label-width="80px" enctype="multipart/form-data" >
  
   <el-form-item label="用户名"  prop="name" >
     <el-input v-model="form.name"  style="width:180px"></el-input>
@@ -90,21 +91,46 @@
       <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
   </el-form-item>
 
-<el-form-item label="照片" prop="imgurl">
+<el-form-item label="照片"  prop="imageUrl">  
+<div  class = "upload">
+ 
+  <el-row>
+		<el-col :span="8" :offset="8">
+			<div id="upload2">
+        <!--elementui的form组件-->
+				<el-form ref="form2" :model="form" label-width="80px">
+					<el-form-item label="活动名称">
+						<el-input v-model="form.name" name="names" style="width:180px;"></el-input>
+					</el-form-item>
 
-<el-upload
-    action="https://jsonplaceholder.typicode.com/posts/"
-    list-type="picture-card"
-    :on-preview="handlePictureCardPreview"
-    :on-remove="handleRemove"
-  >
-    <el-icon><plus /></el-icon>
-  </el-upload>
-  <el-dialog v-model="dialogVisible">
-    <img width="100%" :src="dialogImageUrl" alt="" />
-  </el-dialog>
+          <el-form-item label-width="80px" label="上传图片">
+            <!--elementui的上传图片的upload组件-->
+            <el-upload
+              class="upload-demo"
+              action=""
+              :limit=1
+              :auto-upload=false
+              :on-change="onchange2"
+              :on-remove="handleRemove2"
+              :file-list="fileList2"
+              list-type="picture">
+              <el-button size="small" type="primary">点击上传</el-button>
+              <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+            </el-upload>
+          </el-form-item>
+
+					<el-form-item style="padding-top:20px;" >
+						<el-button type="primary" @click="onSubmit2">立即创建</el-button>
+						<el-button>取消</el-button>
+					</el-form-item>
+				</el-form>
+			</div>
+		</el-col>
+	</el-row>
+ 
 
 
+</div>
 
 </el-form-item>
 
@@ -152,9 +178,10 @@
     <el-button type="primary" @click="NewAddUser">确 定</el-button>
   </span>
 </el-dialog>
- 
-  <!--增加修改用户的对话框-->
+</div>
 
+  <!--增加修改用户的对话框-->
+<div>
   <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="20%" @close="onDialogClose" >
   
   <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
@@ -214,6 +241,7 @@
 </el-dialog>
  
   </div>
+</div>  
 </template> 
 
 <script>
@@ -236,7 +264,6 @@ export default {
        callback()
      }
     return{
-      that: this,   //只要这一步  +{{ scope.row.poid | idToName(that) }}  最优
       dept: [],
       userList: [],
       dialogVisible:false,
@@ -246,7 +273,8 @@ export default {
       valueSex: '',
       age1: '',
       age2: '',
-      imgurl: '',
+      imageUrl: '',
+
       form : {
         id: '',
         name: '',
@@ -322,7 +350,7 @@ export default {
         })
     },
         // 根据条件查询
-    findUser() {
+    findUser() { 
       let  name = this.findForm.name
       let  sex = this.valueSex
       let poid = this.findForm.poid
@@ -485,6 +513,20 @@ export default {
       this.form.age = age;
       this.form.birthday = birth;
     },
+    //将上传图片的原路径赋值给临时路径
+    handleAvatarSuccess(res, file) {
+        //if(res.errno == 0)
+        //this.imageUrl = res.data.fileUrl
+      },
+       beforeAvatarUpload(file) {
+       }
+    
+    
+
+     
+        
+
+
   
 },
 
@@ -529,21 +571,7 @@ export default {
          if ( item.id === deptid )   result = item.name }
       return result
     },
-     handleAvatarSuccess(res, file) {
-        this.imageUrl = URL.createObjectURL(file.raw);
-      },
-      beforeAvatarUpload(file) {
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
-      }
+    
     
   }
 }
@@ -575,4 +603,5 @@ export default {
     height: 178px;
     display: block;
   }
+
 </style>
