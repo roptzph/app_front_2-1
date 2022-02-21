@@ -1,19 +1,19 @@
 <template>
- 
-  <div>
+<div>
+<div>
     <h1 >用户列表资料</h1> <br>
     <el-button type="primary" @click="dialogVisible = true"   >添加用户</el-button> &nbsp
     搜索条件：
     <el-input v-model="findForm.name" clearable placeholder="输入姓名" style="width:100px" ></el-input>  &nbsp
 
-<el-select v-model="valueSex" align="center" clearable placeholder="选择性别" style="width:140px"> 
+   <el-select v-model="valueSex" align="center" clearable placeholder="选择性别" style="width:140px"> 
     <el-option
       v-for="item in optionSex"
       :key="item.label"
       :label="item.valueSex"
       :value="item.label"
->
-    </el-option>
+    >
+     </el-option>
   </el-select>  &nbsp
    <el-input v-model="age1" clearable placeholder="起始年龄" style="width:120px"></el-input>   -
    <el-input v-model="age2" clearable placeholder="结束年龄" style="width:120px"></el-input> &nbsp
@@ -22,13 +22,13 @@
       <el-select v-model="findForm.poid" clearable placeholder="选择部门" style="width:150px" >
          <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
       </el-select>  
- &nbsp
+   &nbsp
 
     <el-button type="primary" @click="findUser" plain>开始查询</el-button><br>
 
    <!--<label for="">显示照片开关</label>  &nbsp  
           <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>  -->
-          <el-checkbox v-model="isPhoto">显示隐藏照片</el-checkbox> 
+          <el-checkbox v-model="isPhoto"  >显示隐藏照片</el-checkbox> 
   <el-table :data="userList"    stripe  border  style="width: 80%" >  
 
       <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
@@ -74,14 +74,14 @@
       </el-table-column>
 
   </el-table>
-  
-
-  <!--增加添加用户的对话框-->
+</div> 
 <div>
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="60%" @close="onDialogClose" >
+  <!--增加添加用户的对话框-->
+
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="60%"  >
   
   <!--在对话框内增加表单-->
-  <el-form ref="form" :model="form" :rules="rules" label-width="80px" enctype="multipart/form-data" >
+  <el-form ref="form" :model="form" :rules="rules" label-width="80px" enctype="multipart/form-data" @close="onDialogClose"  >
  
   <el-form-item label="用户名"  prop="name" >
     <el-input v-model="form.name"  style="width:180px"></el-input>
@@ -91,41 +91,41 @@
       <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
   </el-form-item>
 
-<el-form-item label="上传照片" prop="imgurl">
+  <el-form-item label="上传照片" prop="imgurl">
 
 
  <el-upload
   class="avatar-uploader"
   action
-  :show-file-list="fasle"
+  :show-file-list="false"
   :before-upload="beforeAvatarUpload"
   :http-request="uploadPic">
   <img v-if="form.imgurl" :src="form.imgurl"  class="avatar">
   <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-</el-upload>
+  </el-upload>
 
 
-</div>
 
-</el-form-item>
+
+  </el-form-item>
 
   <el-form-item label="出生日期"  prop="birthday" required >
    <div class="block">
-    <el-date-picker
+     <el-date-picker
       v-model="form.birthday"
       type="date"
       placeholder="选择日期"
       format="yyyy 年 MM 月 dd 日"
       value-format="yyyy-MM-dd">
-    </el-date-picker>
-  </div>
+     </el-date-picker>
+   </div>
   </el-form-item>
 
 
-<el-form-item label="年龄"  prop="age" style="width:30px" > 
+  <el-form-item label="年龄"  prop="age" style="width:30px" > 
   <el-input v-model="form.age" placeholder="输入年龄" style="width: 50px;"/>
    </el-form-item>
-<el-form-item label="性别"  prop="sex" style="width:30px" > 
+  <el-form-item label="性别"  prop="sex" style="width:30px" > 
   <el-input v-model="form.sex" placeholder="性别" style="width: 50px;"/>
    </el-form-item>
 
@@ -152,71 +152,89 @@
     <el-button @click="dialogVisible = false">取 消</el-button>
     <el-button type="primary" @click="NewAddUser">确 定</el-button>
   </span>
-</el-dialog>
+  </el-dialog>
 </div>
 
   <!--增加修改用户的对话框-->
 <div>
-  <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="20%" @close="onDialogClose" >
+      <el-dialog  title="修改用户资料"  :visible.sync="putDialogVisible"  width="20%">
+      
+      <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
+      <el-form 
+          ref="putFormRef" 
+          :model="putForm" 
+          :rules="putRules" 
+          label-width="80px"    @close="onDialogClose"  >
+    
+      <el-form-item label="用户编号"  prop="id" >
+        <el-input v-model="putForm.id" :disabled="true"style="width:240px"  ></el-input>
+      </el-form-item>
+      <el-form-item label="用户名"  prop="name" style="width:240px">
+        <el-input v-model="putForm.name"></el-input>
+      </el-form-item>
+
+      <el-form-item label="照片" prop="imgurl">
+
+
+          <el-upload
+            class="avatar-uploader"
+            action
+            :show-file-list="false"
+            :before-upload="beforeAvatarUpload"
+            :http-request="putUploadPic">
+            <img v-if="putForm.imgurl" :src="putForm.imgurl"  class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+
+
+
+
+      </el-form-item>
+
+      <el-form-item label="出生日期"  prop="birthday"  >
+      <div class="block">
+        <el-date-picker
+          v-model="putForm.birthday"
+          type="date"
+          placeholder="选择日期"
+          format="yyyy 年 MM 月 dd 日"
+          value-format="yyyy-MM-dd">
+        </el-date-picker>
+      </div>
+      </el-form-item>
+      
+
+
+      <el-form-item label="性别"  prop="sex">
+        <el-radio-group v-model="putForm.sex">
+          <el-radio label="男"></el-radio>
+          <el-radio label="女"></el-radio>
+        </el-radio-group>
+      </el-form-item>
+
+
+
+      <el-form-item label="部门" prop="poid">
+              <el-select v-model="putForm.poid" placeholder="请选择部门">
+                <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
+              </el-select>
+      </el-form-item>
+
+      <el-form-item label="其他"  prop="other" style="width:300px">
+        <el-input v-model="putForm.other"></el-input>
+      </el-form-item>
+
+
+      </el-form>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="putDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="putUser">确 定</el-button>
+      </span>
+      </el-dialog>
   
-  <!--在对话框内增加表单v-for="(item,id) in putForm" :key= "id"-->
-  <el-form 
-      ref="putFormRef" 
-      :model="putForm" 
-      :rules="putRules" 
-      label-width="80px" >
- 
-  <el-form-item label="用户编号"  prop="id" >
-    <el-input v-model="putForm.id" :disabled="true"style="width:240px"  ></el-input>
-  </el-form-item>
-  <el-form-item label="用户名"  prop="name" style="width:240px">
-    <el-input v-model="putForm.name"></el-input>
-  </el-form-item>
-
-  <el-form-item label="出生日期"  prop="birthday"  >
-   <div class="block">
-    <el-date-picker
-      v-model="putForm.birthday"
-      type="date"
-      placeholder="选择日期"
-      format="yyyy 年 MM 月 dd 日"
-      value-format="yyyy-MM-dd">
-    </el-date-picker>
-  </div>
-  </el-form-item>
-  
-
-
-   <el-form-item label="性别"  prop="sex">
-    <el-radio-group v-model="putForm.sex">
-      <el-radio label="男"></el-radio>
-      <el-radio label="女"></el-radio>
-    </el-radio-group>
-   </el-form-item>
-
-
-
- <el-form-item label="部门" prop="poid">
-          <el-select v-model="putForm.poid" placeholder="请选择部门">
-            <el-option v-for="item in dept" :key="item.id" :label="item.name" :value="item.id"></el-option>
-          </el-select>
-</el-form-item>
-
-   <el-form-item label="其他"  prop="other" style="width:300px">
-    <el-input v-model="putForm.other"></el-input>
-  </el-form-item>
-
-
-  </el-form>
-
-  <span slot="footer" class="dialog-footer">
-    <el-button @click="putDialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="putUser">确 定</el-button>
-  </span>
-</el-dialog>
- 
-  </div>
-</div>  
+</div> 
+</div>
 </template> 
 
 <script>
@@ -241,10 +259,10 @@ export default {
     return {
      // 图片上传组件
       dept: [],
+      isPhoto: 'false',
       userList: [],
       dialogVisible:false,
       putDialogVisible:false,
-      isPhoto: true,
       optionSex: [{ valueSex: '男',label:'男' }, { valueSex: '女',label: '女'  }],
       valueSex: '',
       age1: '',
@@ -270,12 +288,13 @@ export default {
       },
       //poid: '',
       putForm : {
-        id: '',
         name: '',
+        card: '',
         sex:'',
         birthday:'',
         other:'',
-        poid:''
+        poid:'',
+        imgurl: ''
       },
     
       rules: {
@@ -490,9 +509,10 @@ export default {
     },
     //上传图片
     uploadPic(f){
-      console.log(f)
+      console.log("ok")
       let formData = new FormData()
       formData.append('file', f.file)
+      console.log(formData)
       this.axios({
         method: 'post',
         url: '/v1/upload',
@@ -503,9 +523,24 @@ export default {
 
       })
     },
+    putUploadPic(f){
+      console.log("ok")
+      let formData = new FormData()
+      formData.append('file', f.file)
+      console.log(formData)
+      this.axios({
+        method: 'post',
+        url: '/v1/upload',
+        data: formData
+      }).then(res =>{
+           //上传成功之后 显示图片
+          this.putForm.imgurl = res.data.url
+
+      })
+    },
 
       beforeAvatarUpload(){
-
+        return true
       }
 
 },
