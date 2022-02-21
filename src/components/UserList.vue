@@ -29,7 +29,7 @@
    <!--<label for="">显示照片开关</label>  &nbsp  
           <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>  -->
           <el-checkbox v-model="isPhoto"  >显示隐藏照片</el-checkbox> 
-  <el-table :data="userList"    stripe  border  style="width: 80%" >  
+  <el-table :data="userList.slice((currentPage-1)*pagesize,currentPage*pagesize)"  stripe  border  style="width: 80%" >  
 
       <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
       <template v-slot="scope">
@@ -73,7 +73,17 @@
         </template>
       </el-table-column>
 
-  </el-table>
+    </el-table>
+    <div class="block1">
+            <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"  
+              :current-page.sync="currentPage"     
+              :page-size="8"           
+              layout="total,prev, pager, next"
+              :total="total">
+            </el-pagination>
+</div>
 </div> 
 <div>
   <!--增加添加用户的对话框-->
@@ -257,6 +267,12 @@ export default {
        callback()
      }
     return {
+      //页控制
+       tableData: [],
+        multipleSelection: [],
+        total: 15,
+        pagesize:8,
+        currentPage:1,
      // 图片上传组件
       dept: [],
       isPhoto: 'false',
@@ -332,6 +348,14 @@ export default {
   },
 
   methods: {
+    handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        const _this = this;
+        _this.getUrl(val)   // 调取列表的函数，初始化时调一次。 
+},
+        current_change(currentPage){
+        this.currentPage = currentPage;
+      },
     getUserList() {  
       //因为不是在此页引入axios,所以要加this.axios  
       this.axios.get("/v1/getstaff")   //注意v1与后端app.use('/v1',router) 对应
