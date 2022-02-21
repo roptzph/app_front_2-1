@@ -91,43 +91,18 @@
       <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
   </el-form-item>
 
-<el-form-item label="照片"  prop="imageUrl">  
-<div  class = "upload">
- 
-  <el-row>
-		<el-col :span="8" :offset="8">
-			<div id="upload2">
-        <!--elementui的form组件-->
-				<el-form ref="form2" :model="form" label-width="80px">
-					<el-form-item label="活动名称">
-						<el-input v-model="form.name" name="names" style="width:180px;"></el-input>
-					</el-form-item>
+<el-form-item label="上传照片" prop="imgurl">
 
-          <el-form-item label-width="80px" label="上传图片">
-            <!--elementui的上传图片的upload组件-->
-            <el-upload
-              class="upload-demo"
-              action=""
-              :limit=1
-              :auto-upload=false
-              :on-change="onchange2"
-              :on-remove="handleRemove2"
-              :file-list="fileList2"
-              list-type="picture">
-              <el-button size="small" type="primary">点击上传</el-button>
-              <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
-            </el-upload>
-          </el-form-item>
 
-					<el-form-item style="padding-top:20px;" >
-						<el-button type="primary" @click="onSubmit2">立即创建</el-button>
-						<el-button>取消</el-button>
-					</el-form-item>
-				</el-form>
-			</div>
-		</el-col>
-	</el-row>
- 
+ <el-upload
+  class="avatar-uploader"
+  action
+  :show-file-list="fasle"
+  :before-upload="beforeAvatarUpload"
+  :http-request="uploadPic">
+  <img v-if="form.imgurl" :src="form.imgurl"  class="avatar">
+  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+</el-upload>
 
 
 </div>
@@ -263,7 +238,8 @@ export default {
        }
        callback()
      }
-    return{
+    return {
+     // 图片上传组件
       dept: [],
       userList: [],
       dialogVisible:false,
@@ -273,16 +249,14 @@ export default {
       valueSex: '',
       age1: '',
       age2: '',
-      imageUrl: '',
-
       form : {
-        id: '',
         name: '',
-        idcard: '',
+        card: '',
         sex:'',
         birthday:'',
         other:'',
-        poid:''
+        poid:'',
+        imgurl: ''
       },
       
       findForm : {
@@ -436,6 +410,7 @@ export default {
     },
     // 展示编辑员工对话框
     putShow(id) {
+
       this.axios
         .get("/v1/getstaff_id", {
           params: {
@@ -513,21 +488,26 @@ export default {
       this.form.age = age;
       this.form.birthday = birth;
     },
-    //将上传图片的原路径赋值给临时路径
-    handleAvatarSuccess(res, file) {
-        //if(res.errno == 0)
-        //this.imageUrl = res.data.fileUrl
-      },
-       beforeAvatarUpload(file) {
-       }
-    
-    
+    //上传图片
+    uploadPic(f){
+      console.log(f)
+      let formData = new FormData()
+      formData.append('file', f.file)
+      this.axios({
+        method: 'post',
+        url: '/v1/upload',
+        data: formData
+      }).then(res =>{
+           //上传成功之后 显示图片
+          this.form.imgurl = res.data.url
 
-     
-        
+      })
+    },
 
+      beforeAvatarUpload(){
 
-  
+      }
+
 },
 
   filters: {
@@ -571,7 +551,8 @@ export default {
          if ( item.id === deptid )   result = item.name }
       return result
     },
-    
+
+
     
   }
 }
@@ -579,8 +560,8 @@ export default {
 
  </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
-  .avatar-uploader .el-upload {
+<style >
+.avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     border-radius: 6px;
     cursor: pointer;

@@ -8,7 +8,7 @@ import UserDetail from '@/components/UserDetail.vue'
 
 const router = new VueRouter({
   routes: [
-     { path: '/', redirect: '/users'},
+     { path: '/', redirect: '/'},
      { path: '/users', component:  UserList},
      { path: '/users/:id', component:  UserDetail, props: true}
   ]
