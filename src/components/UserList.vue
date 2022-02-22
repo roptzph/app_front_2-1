@@ -29,7 +29,7 @@
    <!--<label for="">显示照片开关</label>  &nbsp  
           <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>  -->
           <el-checkbox v-model="isPhoto"  >显示隐藏照片</el-checkbox> 
-  <el-table :data="userList.slice((currentPage-1)*pagesize,currentPage*pagesize)"  stripe  border  style="width: 80%" >  
+  <el-table :data="userList.slice((currentPage-1)*pageSize,currentPage*pageSize)"  stripe  border  style="width: 80%" >  
 
       <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
       <template v-slot="scope">
@@ -74,16 +74,19 @@
       </el-table-column>
 
     </el-table>
-    <div class="block1">
+
+          <!--分页控制-->
+
+          <div class="block1">
             <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"  
+              @size-change="sizeChange"
+              @current-change="currentChange"  
               :current-page.sync="currentPage"     
-              :page-size="8"           
+              :pageSize="pageSize"           
               layout="total,prev, pager, next"
               :total="total">
             </el-pagination>
-</div>
+          </div>
 </div> 
 <div>
   <!--增加添加用户的对话框-->
@@ -104,14 +107,14 @@
   <el-form-item label="上传照片" prop="imgurl">
 
 
- <el-upload
-  class="avatar-uploader"
-  action
-  :show-file-list="false"
-  :before-upload="beforeAvatarUpload"
-  :http-request="uploadPic">
-  <img v-if="form.imgurl" :src="form.imgurl"  class="avatar">
-  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+  <el-upload
+      class="avatar-uploader"
+      action
+      :show-file-list="false"
+      :before-upload="beforeAvatarUpload"
+      :http-request="uploadPic">
+      <img v-if="form.imgurl" :src="form.imgurl"  class="avatar">
+      <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
 
 
@@ -132,11 +135,11 @@
   </el-form-item>
 
 
-  <el-form-item label="年龄"  prop="age" style="width:30px" > 
-  <el-input v-model="form.age" placeholder="输入年龄" style="width: 50px;"/>
+  <el-form-item label="年龄"  prop="age" style="width:10px" > 
+  <el-input v-model="form.age" placeholder="输入年龄" style="width: 100px;"/>
    </el-form-item>
-  <el-form-item label="性别"  prop="sex" style="width:30px" > 
-  <el-input v-model="form.sex" placeholder="性别" style="width: 50px;"/>
+  <el-form-item label="性别"  prop="sex" style="width:80px" > 
+  <el-input v-model="form.sex" placeholder="性别" style="width:80px;"/>
    </el-form-item>
 
  <!--  <el-form-item label="性别"  prop="sex">
@@ -270,9 +273,10 @@ export default {
       //页控制
        tableData: [],
         multipleSelection: [],
-        total: 15,
-        pagesize:8,
-        currentPage:1,
+        row: [],
+        total: 0,
+        pageSize: 8,
+        currentPage: 1,
      // 图片上传组件
       dept: [],
       isPhoto: 'false',
@@ -345,17 +349,37 @@ export default {
     //this.getUserList()
     this.getUserList()
     this.getDept()
+    this.getUserListCount()
   },
 
   methods: {
-    handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+    //分页方法
+    sizeChange(){
+      this.getUserListCount()
+    },
+    currentChange(val) {
+        //console.log(`当前页: ${val}`);
         const _this = this;
-        _this.getUrl(val)   // 调取列表的函数，初始化时调一次。 
-},
-        current_change(currentPage){
-        this.currentPage = currentPage;
-      },
+        this.getUserListCount()
+       // _this.getUrl(val)   // 调取列表的函数，初始化时调一次。 
+    },
+      //   current_change(currentPage){
+      //   this.currentPage = currentPage;
+      // },
+    //获取查询记录数 
+    getUserListCount() {  
+      //因为不是在此页引入axios,所以要加this.axios 
+      
+      this.axios.get("/v1/getCountstaff")   //注意v1与后端app.use('/v1',router) 对应
+        .then(res => {
+         let  row = res.data  //从[{n: 10}]  转化为 {n: 10}
+         this.total= row[0].n  //这一步很重要，变为数组 从{n: 10} 转化为  10
+        })
+        .catch(err => {
+         console.log(err)
+        })
+    },
+    //获取全部记录  
     getUserList() {  
       //因为不是在此页引入axios,所以要加this.axios  
       this.axios.get("/v1/getstaff")   //注意v1与后端app.use('/v1',router) 对应
