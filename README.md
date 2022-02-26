@@ -25,5 +25,9 @@ npm install  -g
 }
 ```
 
+```
+npm install  -S  jsonwebtoken
+```
+const jwt = require('jsonwebtoken')
 
 

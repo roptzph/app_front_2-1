@@ -1,46 +1,52 @@
 <template>
-   <el-aside width="200px">
-         <el-menu 
-          default-active="3"
-          class="el-menu-vertical-demo"  router>
+   <el-aside width="200px"  >
+        <!-- <el-menu 
+           default-active="1"
+           class="el-menu-vertical-demo"  router>
 
-          <el-menu-item index="/home">
-             <i class="el-icon-menu"></i>
-             <span slot="title">首页</span>
-          </el-menu-item>
+           <el-menu-item  :index="v.url"  v-for="v in items"  :key="v.url">
+              <el-icon><icon-menu /> </el-icon>
+              <span >{{v.name}}</span>
+           </el-menu-item>
+       </el-menu>      -->
 
-          <el-menu-item index="2">
-             <i class="el-icon-menu"></i>
-             <span slot="title">基础设置</span>
-          </el-menu-item>
+        <el-menu 
+           default-active="3"
+           class="el-menu-vertical-demo"  router>
 
-          <el-menu-item-group>
-           <template slot="title">====人事管理中心====</template>
-            <el-menu-item index="/users">人事档案</el-menu-item>
-            <el-menu-item index="3-2">合同管理</el-menu-item>
-            <el-menu-item index="3-3">培训档案</el-menu-item>
-            <el-menu-item index="3-4">奖罚档案</el-menu-item>
-          </el-menu-item-group>
+           <el-menu-item index="/home">
+              <i class="el-icon-menu"></i>
+              <span slot="title">首页</span>
+           </el-menu-item>
+
+           <el-menu-item index="/baseRule">
+              <i class="el-icon-menu"></i>
+              <span slot="title">基础设置</span>
+           </el-menu-item>
+
+           <el-menu-item-group>
+             <el-menu-item index="/users">成本项目</el-menu-item>
+             <el-menu-item index="3-2">台帐查询</el-menu-item>
+             <el-menu-item index="3-3">资料管理</el-menu-item>
+             <el-menu-item index="3-4">导入导出</el-menu-item>
+             <el-menu-item index="3-4">打印管理</el-menu-item>
+           </el-menu-item-group>
 
 
-          <el-menu-item-group>
-           <template slot="title">====工资管理中心====</template>
-            <el-menu-item index="4-1">工资数据</el-menu-item>
-            <el-menu-item index="4-2">工资变动</el-menu-item>
-            <el-menu-item index="4-3">奖金数据</el-menu-item>
-            <el-menu-item index="4-4">年度汇总</el-menu-item>
-          </el-menu-item-group>
 
-        </el-menu>
 
+         </el-menu>
+    
 
    </el-aside>
 
 
 
 
+
   
 </template>
+  
 
 
 
@@ -49,12 +55,13 @@
 
 
 <script>
-//import UserList from '@/components/UserList.vue'
+
 export default { 
       name: 'NavMenu',
 
       data(){  
         return{ 
+ 
 
         } 
       },
@@ -69,7 +76,7 @@ export default {
 
 <style  class="less" scoped>
   .el-header, .el-footer {
-    background-color: #B3C0D1;
+    background-color: #14c8ce;
     color: #333;
     text-align: center;
     line-height: 60px;

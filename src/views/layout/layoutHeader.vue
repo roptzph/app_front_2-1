@@ -1,17 +1,11 @@
 <template>
   
-      <el-header>Header</el-header>
-
-
-
-
+      <el-header>
+         欢迎登陆成本查询系统
+      </el-header>
 
   
 </template>
-
-
-
-
 
 
 
@@ -35,8 +29,5 @@ export default {
 </script>
 
 <style  class="less" scoped>
-     .header {
-       height: 60px;
-       background: skyblue;
-  }
+
 </style>
