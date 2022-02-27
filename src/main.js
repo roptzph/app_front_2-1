@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import store from './store'
 import resource from 'vue-resource'
 const bodyParser = require('body-parser')
 import EIementUI from 'element-ui'
@@ -26,5 +27,6 @@ Vue.prototype.dayjs = dayjs
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
