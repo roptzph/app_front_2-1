@@ -3,24 +3,14 @@
     <el-container  >
       <NavMenu />
       <el-container  direction="vertical">
-        <LayoutHeader />
-        <LayoutMain />
+        <LayoutHeader >   </LayoutHeader >
+        <LayoutMain >        </LayoutMain>
       </el-container>
     </el-container>
 
 
 
-
-
-
-
-
-
 </template>
-
-
-
-
 
 
 
@@ -58,11 +48,17 @@ export default {
 
 <style  class="less" scoped>
 
-  .el-header, .el-footer {
-    background-color: #B3C0D1;
+  .el-header{
+    background: #c6ecb6;
     color: #333;
-    text-align: center;
-    line-height: 60px;
+    text-align: right;
+    line-height: 45px;
+    height: 45px !important;
+    
+
+
+
+
   }
   
   .el-aside {
@@ -80,7 +76,7 @@ export default {
   }
   
   body > .el-container {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
   }
   
   .el-container:nth-child(5) .el-aside,

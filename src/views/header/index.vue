@@ -1,6 +1,6 @@
 <template>
     <div>
-    <img src="logo.png" alt="">
+    欢迎登陆
     </div>
 </template>
 
