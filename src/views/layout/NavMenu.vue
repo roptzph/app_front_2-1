@@ -10,9 +10,14 @@
            </el-menu-item>
        </el-menu>      -->
 
+          <!-- <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">
+            <el-radio-button :label="false">展开</el-radio-button>
+            <el-radio-button :label="true">收起</el-radio-button>
+          </el-radio-group> -->
         <el-menu 
            default-active="3"
-           class="el-menu-vertical-demo"  router>
+           class="el-menu-vertical-demo"  router
+           >
 
            <el-menu-item index="/home">
               <i class="el-icon-menu"></i>
@@ -24,13 +29,12 @@
               <span slot="title">基础设置</span>
            </el-menu-item>
 
-           <el-menu-item-group>
-             <el-menu-item index="/users">成本项目</el-menu-item>
-             <el-menu-item index="3-2">台帐查询</el-menu-item>
-             <el-menu-item index="3-3">资料管理</el-menu-item>
-             <el-menu-item index="3-4">导入导出</el-menu-item>
-             <el-menu-item index="3-4">打印管理</el-menu-item>
-           </el-menu-item-group>
+           <el-menu-item index="/users">
+              <i class="el-icon-menu"></i>
+              <span slot="title">成本查询</span>
+           </el-menu-item>
+
+           
 
 
 
@@ -61,9 +65,13 @@ export default {
 
       data(){  
         return{ 
+
  
 
         } 
+      },
+      components:{
+
       },
       created(){
 

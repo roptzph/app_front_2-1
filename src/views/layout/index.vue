@@ -48,13 +48,14 @@ export default {
 
 <style  class="less" scoped>
 
-  .el-header, .el-footer {
-    background: #c6ecb6;
-    color: #333;
-    text-align: center;
-    line-height: 100px;
-    height: 100px;
-
+  .el-header {
+   
+    background: #427eee;
+    color: #fff;
+    font-size: 12x;
+    text-align: right;
+    line-height: 45px;
+    height: 45px !important;
   }
   
   .el-aside {

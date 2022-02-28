@@ -1,7 +1,16 @@
 <template>
   
       <el-header>
-         欢迎登陆成本查询系统
+        <div>
+
+  
+             欢迎： admin  &nbsp    
+
+
+              <i class="el-icon-switch-button" style="font-size:20px;"  @click="goBack" >"el-icon-switch-button"</i>
+
+
+        </div>  
       </el-header>
 
   
@@ -29,5 +38,7 @@ export default {
 </script>
 
 <style  class="less" scoped>
+
+
 
 </style>

@@ -77,10 +77,12 @@
       };
     },
     methods: {
+      //登陆提交
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            alert('submit!');
+            this.$router.push('/home')
+            //alert('submit!');
           } else {
             console.log('error submit!!');
             return false;
@@ -97,7 +99,7 @@
 <style lang="less" scoped>
   .login-box{
     // background-image:url(../../../public/logo.png);
-    background-color: rgba(238, 217, 217, 0.87);
+    background-color: rgba(255, 255, 255, 0.452);
     background-repeat: no-repeat;
     background-size:100%;
     background-position: 100%;
@@ -106,20 +108,21 @@
     margin:250px  auto;
     padding: 20px;
     border-radius: 10px;
-    border:1px solid #eee;
+    border:1px solid rgba(224, 207, 207, 0.021);
   }
   .title{
     margin-bottom: 20px; 
     text-align: center;
   }
   .loginback{
-    background-image: url(../../../public/g003.jpeg);
+    background-image: url(../../../public/g004.jpg);
     background-size:100%;
     background-position: 100%;
     background-color:#cccccc;
     width:auto;
     height: 1000px;
     border:1px solid #eee;
+    border-radius: 20px;
     margin-top: 0px;
   }
 
