@@ -41,6 +41,15 @@ export default {
 
       },
       methods:{
+        loginout() {
+      //退出登录
+      //清空vuex数据
+      this.clearUser();
+      //清空本地存储
+      localStorage.removeItem("user");
+      //返回登录
+      this.$router.push("/login");
+    },
 
       }
 }

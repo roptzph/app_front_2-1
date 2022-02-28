@@ -1,7 +1,11 @@
 <template>
   
       <el-header>
-         admin   退出
+      <div class="user">
+          <span > 欢迎：admin </span> &nbsp
+          <i class="el-icon-switch-button" @click="loginout"></i>
+      </div>
+
       </el-header>
 
   
@@ -23,6 +27,16 @@ export default {
 
       },
       methods:{
+           
+           loginout() {
+      //退出登录
+      //清空vuex数据
+      //this.clearUser();
+      //清空本地存储
+      //localStorage.removeItem("user");
+      //返回登录
+      this.$router.push("/login");
+    },
 
       }
 }
