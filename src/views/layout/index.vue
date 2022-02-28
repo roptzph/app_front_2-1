@@ -41,15 +41,7 @@ export default {
 
       },
       methods:{
-        loginout() {
-      //退出登录
-      //清空vuex数据
-      this.clearUser();
-      //清空本地存储
-      localStorage.removeItem("user");
-      //返回登录
-      this.$router.push("/login");
-    },
+        
 
       }
 }
@@ -58,8 +50,8 @@ export default {
 <style  class="less" scoped>
 
   .el-header{
-    background: #c6ecb6;
-    color: #333;
+    background: #281af3e1;
+    color: #fff;
     text-align: right;
     line-height: 45px;
     height: 45px !important;

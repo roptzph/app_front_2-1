@@ -34,10 +34,7 @@
       var validateusername = (rule, value, callback) => {
       if(!value) {
         return callback(new Error('请输入账号'))
-      }
-      if(!/^(?![0-9]*$)(?![a-zA-Z]*$)[a-zA-Z0-9]{6,20}$/.test(value)) {
-        callback(new Error('账号必须为6-20位字母和数字组合'))
-      } else {
+      }else {
          callback()
       }
       };
@@ -55,9 +52,7 @@
       var validatepassword = (rule, value, callback) => {
         if (value === '') {
           callback(new Error('请输入密码'));
-        } else if (value !== this.loginForm.username) {
-          callback(new Error('两次输入不一致!'));
-        } else {
+        }else{
           callback();
         }
       };
@@ -77,16 +72,43 @@
       };
     },
     methods: {
+      //登陆提交
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            //alert('submit!');
-            this.$router.push('/home')
+            let { username,password} = this.loginForm;
+            //请求登录接口------------- 
+            this.axios.post("/v1/login", {
+              username,password
+            }).then(res=>{
+              console.log('-----',res.data);
+              if(res.data.status===200){
+                console.log(jwt(res.data.data));
+                //登录成功后：1. 存储登录信息  2. 跳转网页 3. 顶部区域显示用户信息  4. 持久化
+                let obj ={
+                  user:jwt(res.data.data).username,
+                  token:res.data.data
+                }
+                //this.setUser(obj)
+                //存储本地
+                //localStorage.setItem('user',JSON.stringify(obj))
+                //跳转
+                this.$router.push('/')
+                // this.info=''
+
+              }else{
+                //账号或者密码错误
+                // this.info='账号或者密码错误'
+                 this.$message.error('错了哦，这是一条错误消息');
+              }
+            })
+
+
           } else {
             console.log('error submit!!');
             return false;
           }
-        });
+        })
       },
       resetForm(formName) {
         this.$refs[formName].resetFields();
@@ -98,7 +120,7 @@
 <style lang="less" scoped>
   .login-box{
     // background-image:url(../../../public/logo.png);
-    background-color: rgba(238, 217, 217, 0.87);
+    background-color: rgba(255, 255, 255, 0.452);
     background-repeat: no-repeat;
     background-size:100%;
     background-position: 100%;
@@ -107,20 +129,21 @@
     margin:250px  auto;
     padding: 20px;
     border-radius: 10px;
-    border:1px solid #eee;
+    border:1px solid rgba(224, 207, 207, 0.021);
   }
   .title{
     margin-bottom: 20px; 
     text-align: center;
   }
   .loginback{
-    background-image: url(../../../public/g003.jpeg);
+    background-image: url(../../../public/g004.jpg);
     background-size:100%;
     background-position: 100%;
     background-color:#cccccc;
     width:auto;
     height: 1000px;
     border:1px solid #eee;
+    border-radius: 20px;
     margin-top: 0px;
   }
 

@@ -15,6 +15,7 @@
 
 <script>
 //import UserList from '@/components/UserList.vue'
+import  { token } from '../login/index.vue'
 export default { 
       name: 'layoutHeader',
 
@@ -28,10 +29,11 @@ export default {
       },
       methods:{
            
-           loginout() {
+      loginout() {
       //退出登录
       //清空vuex数据
       //this.clearUser();
+      this.token = ''
       //清空本地存储
       //localStorage.removeItem("user");
       //返回登录
@@ -43,5 +45,9 @@ export default {
 </script>
 
 <style  class="less" scoped>
+
+      .el-icon-switch-button{
+            font-size: 20px;
+      }
 
 </style>

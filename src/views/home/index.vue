@@ -1,6 +1,9 @@
 <template>
-    <div>
-    <img src="logo.png" alt="">
+    <div align="center">
+    <img src="g001.jpeg"  alt="">
     </div>
 </template>
 
+<style scoped>
+
+</style>
