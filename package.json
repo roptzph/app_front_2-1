@@ -12,6 +12,7 @@
     "dayjs": "^1.10.7",
     "element-ui": "^2.15.6",
     "jsonwebtoken": "^8.5.1",
+    "jwt-decode": "^3.1.2",
     "mysql": "^2.18.1",
     "vue": "^2.6.11",
     "vue-resource": "^1.5.3",
@@ -23,8 +24,14 @@
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "dayjs": "^1.10.7",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
+    "multer": "^1.4.4",
+    "mysql": "^2.18.1",
+    "promise": "^8.1.0",
     "vue-template-compiler": "^2.6.11"
   }
 }

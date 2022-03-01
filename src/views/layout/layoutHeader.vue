@@ -15,7 +15,8 @@
 
 <script>
 //import UserList from '@/components/UserList.vue'
-import  { token } from '../login/index.vue'
+import { mapState, mapMutations } from "vuex";
+//import  from  '../../store/modules/loginModule'
 export default { 
       name: 'layoutHeader',
 
@@ -24,18 +25,21 @@ export default {
 
         } 
       },
+      components:{
+
+      },
       created(){
 
       },
       methods:{
-           
+       ...mapMutations('loginModule',['clearUser']),    
       loginout() {
       //退出登录
       //清空vuex数据
-      //this.clearUser();
+      this.clearUser();
       this.token = ''
       //清空本地存储
-      //localStorage.removeItem("user");
+      localStorage.removeItem("user");
       //返回登录
       this.$router.push("/login");
     },

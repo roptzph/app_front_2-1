@@ -1,5 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+//获取vuex数据
+import store from '../store/index'
+
+const originalPush = VueRouter.prototype.push
+
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
@@ -16,7 +24,7 @@ const router = new VueRouter({
 
   routes: [
      {
-        path:'/home',
+        path:'',
         component:Layout,
         meta:{ isLogin:true },
         children: [
@@ -29,15 +37,18 @@ const router = new VueRouter({
      { path: '/', redirect: 'login' }, 
      { path: '/login', component: Login }
   ]
+  
 })
+
 
 //路由拦截
 router.beforeEach((to,from,next)=>{
   //1. 判断是否需要登录
   if(to.matched.some(ele=>ele.meta.isLogin)){
       //2. 判断当前的用户是否已经登录
-      //let token=store.state.loginModule.userinfo.token;
-      let token = '1'
+     let token=store.state.loginModule.userinfo.token;
+     console.log(token)
+      //let token = ''
       if(token){
         next()
       }else{
