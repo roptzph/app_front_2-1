@@ -29,7 +29,7 @@
    <!--<label for="">显示照片开关</label>  &nbsp  
           <el-switch v-model="isPhoto"  active-color="#13ce66"  inactive-color="#ff4949">  </el-switch>  -->
           <el-checkbox v-model="isPhoto">显示隐藏照片</el-checkbox> 
-  <el-table :data="userList"    stripe  border  style="width: 50%" >  
+  <el-table :data="userList"    stripe  border  style="width: 80%" >  
 
       <el-table-column prop="imgurl"  align="center"  v-if="isPhoto"  label="照片"  width="100px"> 
       <template v-slot="scope">
@@ -77,7 +77,7 @@
 
   <!--增加添加用户的对话框-->
 
-  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="25%" @close="onDialogClose" >
+  <el-dialog  title="添加新用户"  :visible.sync="dialogVisible"  width="40%" @close="onDialogClose" >
   
   <!--在对话框内增加表单-->
   <el-form ref="form" :model="form" :rules="rules" label-width="80px" >
@@ -90,7 +90,23 @@
       <el-input v-model="form.idcard" placeholder="请输入身份证" style="width: 220px;"/>
   </el-form-item>
 
+<el-form-item label="照片" prop="imgurl">
 
+<el-upload
+    action="https://jsonplaceholder.typicode.com/posts/"
+    list-type="picture-card"
+    :on-preview="handlePictureCardPreview"
+    :on-remove="handleRemove"
+  >
+    <el-icon><plus /></el-icon>
+  </el-upload>
+  <el-dialog v-model="dialogVisible">
+    <img width="100%" :src="dialogImageUrl" alt="" />
+  </el-dialog>
+
+
+
+</el-form-item>
 
   <el-form-item label="出生日期"  prop="birthday" required >
    <div class="block">
@@ -127,9 +143,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="其他"  prop="other" style="width:300px" >
-    <el-input v-model="form.other"></el-input>
-  </el-form-item>
+
 
   </el-form>
 
@@ -203,6 +217,7 @@
 </template> 
 
 <script>
+
 import  dayjs  from  'dayjs'
 import { Message } from 'element-ui';
 
@@ -231,6 +246,7 @@ export default {
       valueSex: '',
       age1: '',
       age2: '',
+      imgurl: '',
       form : {
         id: '',
         name: '',
@@ -512,7 +528,23 @@ export default {
       for ( let item of dept ) {
          if ( item.id === deptid )   result = item.name }
       return result
-    }
+    },
+     handleAvatarSuccess(res, file) {
+        this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      }
+    
   }
 }
 
@@ -520,5 +552,27 @@ export default {
  </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="less">
-
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
