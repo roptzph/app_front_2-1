@@ -38,18 +38,18 @@
      
       </el-table-column>
 
-      <el-table-column prop="id"  align="center"    label="编号"  width="100">  </el-table-column>
-      <el-table-column prop="name"   align="center"   label="姓名"  width="110"></el-table-column>
-      <el-table-column prop="sex"   align="center"    label="姓别"  width="50"></el-table-column>
+      <el-table-column prop="id"  align="center"  sortable  label="编号"  width="100">  </el-table-column>
+      <el-table-column prop="name"   align="center" sortable  label="姓名"  width="110"></el-table-column>
+      <el-table-column prop="sex"   align="center"  sortable  label="姓别"  width="50"></el-table-column>
 
-      <el-table-column prop="birthday"   align="center"    label="年龄"  width="70">
+      <el-table-column prop="birthday"   align="center"  sortable  label="年龄"  width="70">
         <template v-slot="scope">{{ scope.row.birthday | dateToAge }} </template>
       </el-table-column>
       <el-table-column prop="age"   align="center"    label="年龄2"  width="70">
 
       </el-table-column>
 
-      <el-table-column prop='birthday'   align="center"   label="出生日期"  width="100" >
+      <el-table-column prop='birthday'   align="center"  sortable label="出生日期"  width="100" >
         <template v-slot="scope">{{   dayjs(scope.row.birthday).format('YYYY-MM-DD') }} </template>
       </el-table-column>
 
